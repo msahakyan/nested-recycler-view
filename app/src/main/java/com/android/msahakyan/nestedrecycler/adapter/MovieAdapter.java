@@ -115,6 +115,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         LinearLayoutManager layoutManager
             = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         holder.relatedItemsRecyclerView.setLayoutManager(layoutManager);
+        holder.relatedItemsRecyclerView.setHasFixedSize(true);
         holder.relatedItemsRecyclerView.setAdapter(new RelatedMoviesAdapter(mContext, relatedMoviesItem.getRelatedMovieList()));
         holder.relatedMoviesHeader.setText(mContext.getString(R.string.related_movies) + " " + lastRelatedMoviesType);
     }
