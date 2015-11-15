@@ -1,0 +1,69 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_margin="@dimen/margin_size_default">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_default">
+
+        <ImageView
+            android:id="@+id/movie_thumbnail"
+            android:layout_width="@dimen/thumbnail_width"
+            android:layout_height="@dimen/thumbnail_height"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/comedy_mistress_america"/>
+
+        <TextView
+            android:id="@+id/movie_name"
+            android:layout_width="@dimen/thumbnail_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_thumbnail"
+            android:layout_centerHorizontal="true"
+            android:gravity="left|start"
+            android:maxLines="2"
+            android:paddingTop="@dimen/padding_size_small"
+            android:text="@string/movie_default_name"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="@dimen/thumbnail_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_name"
+            android:layout_centerHorizontal="true"
+            android:weightSum="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/movie_type"
+                android:layout_width="0dp"
+                android:layout_weight="0.6"
+                android:layout_height="wrap_content"
+                android:gravity="left|start"
+                android:paddingTop="@dimen/padding_size_small"
+                android:text="@string/movie_default_type"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/default_text_size"/>
+
+            <TextView
+                android:id="@+id/movie_production_date"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="wrap_content"
+                android:gravity="right|end"
+                android:paddingTop="@dimen/padding_size_small"
+                android:text="@string/movie_default_date"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/default_text_size"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">NestedRecycler</string>
+    <string name="movie_default_name">Movie name</string>
+    <string name="movie_default_date">1990</string>
+    <string name="related_movies">Movies for type</string>
+    <string name="movie_default_type">thriller</string>
+    <string name="loading_data">Loading data...</string>
+
+    <array name="movies">
+        <item>comedy_absolutely_anything_2015</item>
+        <item>comedy_beside_still_waters_2013</item>
+        <item>comedy_burnt_2015</item>
+        <item>comedy_mistress_america_2014</item>
+        <item>comedy_only_you_2015</item>
+        <item>comedy_reverse_runner_2012</item>
+        <item>comedy_saving_christmas_2014</item>
+        <item>comedy_tangerine_2011</item>
+        <item>comedy_the_cookie_project_2015</item>
+        <item>comedy_the_leisure_class_2015</item>
+        <item>comedy_tis_the_season_for_love_2010</item>
+        <item>comedy_vegas_vacation_2013</item>
+        <item>drama_a_borrowed_identity_2015</item>
+        <item>drama_a_matter_of_faith_2012</item>
+        <item>drama_a_trip_to_the_island_2013</item>
+        <item>drama_bleeding_heart_2011</item>
+        <item>drama_dearest_jane_2009</item>
+        <item>drama_everyday_i_love_you_2015</item>
+        <item>drama_i_smile_back_2012</item>
+        <item>drama_lost_in_the_sun_2015</item>
+        <item>drama_the_last_seduction_2014</item>
+        <item>fantasy_arthur_and_merlin_2015</item>
+        <item>fantasy_enemy_empire_2013</item>
+        <item>fantasy_fire_city_2008</item>
+        <item>fantasy_invisible_sister_2015</item>
+        <item>fantasy_kids_vs_monsters_2015</item>
+        <item>fantasy_monster_hunt_2014</item>
+        <item>fantasy_shadow_zombie_2012</item>
+        <item>fantasy_sodium_party_2010</item>
+        <item>fantasy_taven_2014</item>
+        <item>fantasy_the_last_witch_hunter_2007</item>
+        <item>fantasy_warrioress_2015</item>
+        <item>historic_1776_1972</item>
+        <item>historic_a_nightingale_falling_2011</item>
+        <item>historic_back_in_time_2004</item>
+        <item>historic_experimenter_2015</item>
+        <item>historic_iris_2002</item>
+        <item>historic_larry_kramer_in_love_2014</item>
+        <item>historic_our_man_in_tehran_2013</item>
+        <item>historic_testament_of_youth_2007</item>
+        <item>historic_the_messenger_2014</item>
+        <item>historic_the_scandalous_lady_2003</item>
+        <item>historic_the_tracker_2015</item>
+        <item>historic_ve_day_2014</item>
+        <item>thriller_2_bedroom_1_bath_2015</item>
+        <item>thriller_afterdeath_2011</item>
+        <item>thriller_agoraphobia_2015</item>
+        <item>thriller_caught_2008</item>
+        <item>thriller_crawlspace_2014</item>
+        <item>thriller_dangerous_arrangement_2013</item>
+        <item>thriller_the_blackout_2010</item>
+        <item>thriller_the_fear_of_darkness_2015</item>
+        <item>thriller_the_london_firm_2014</item>
+        <item>thriller_the_stanford_prison_experiment_2015</item>
+        <item>thriller_wrecker_2013</item>
+    </array>
+</resources>

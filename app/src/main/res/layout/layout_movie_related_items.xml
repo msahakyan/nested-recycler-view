@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/light_grey"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_size_default">
+
+    <TextView
+        android:id="@+id/related_movies_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/padding_size_small"
+        android:text="@string/related_movies"
+        android:textSize="@dimen/default_text_size"
+        android:textStyle="bold"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/related_movies_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/related_items_container_height"/>
+</LinearLayout>
