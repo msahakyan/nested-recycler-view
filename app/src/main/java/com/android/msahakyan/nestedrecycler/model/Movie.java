@@ -30,11 +30,16 @@ public class Movie implements RecyclerItem {
     private String name;
     private String productionDate;
     private int thumbnailResId;
+    private String description;
 
     @Movie.MovieType
     private String type;
 
     List<Movie> relatedMovies;
+
+    public Movie() {
+        this.description = getDescription();
+    }
 
     public long getId() {
         return id;
@@ -68,11 +73,12 @@ public class Movie implements RecyclerItem {
         this.thumbnailResId = thumbnailResId;
     }
 
+    @Movie.MovieType
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(@Movie.MovieType String type) {
         this.type = type;
     }
 
@@ -82,5 +88,12 @@ public class Movie implements RecyclerItem {
 
     public void setRelatedMovies(List<Movie> relatedMovies) {
         this.relatedMovies = relatedMovies;
+    }
+
+    public String getDescription() {
+        return "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem " +
+            "Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum " +
+            "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem " +
+            "Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum";
     }
 }

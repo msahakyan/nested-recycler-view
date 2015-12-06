@@ -1,6 +1,8 @@
 package com.android.msahakyan.nestedrecycler.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
+import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
+import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 
@@ -42,16 +46,23 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
 
     @Override
     public void onBindViewHolder(RelatedMoviesViewHolder holder, int position) {
-        Movie movie = mMovieItems.get(position);
+        final Movie movie = mMovieItems.get(position);
         holder.name.setText(movie.getName());
         holder.thumbnail.setImageResource(movie.getThumbnailResId());
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                //TODO Implement your logic here
-                Toast.makeText(mContext, mMovieItems.get(position).getName(), Toast.LENGTH_SHORT).show();
+//                //TODO Implement your logic here
+//                Toast.makeText(mContext, mMovieItems.get(position).getName(), Toast.LENGTH_SHORT).show();
+                startDetailsActivity(movie);
             }
         });
+    }
+
+    private void startDetailsActivity(Movie movie) {
+        Intent intent = new Intent(mContext, MovieDetailActivity.class);
+        intent.putExtra(BundleKey.EXTRA_MOVIE, movie);
+        mContext.startActivity(intent);
     }
 
     @Override

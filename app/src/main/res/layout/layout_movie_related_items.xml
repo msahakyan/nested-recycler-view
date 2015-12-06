@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:background="@color/light_grey"
-    android:orientation="vertical"
     android:padding="@dimen/padding_size_default">
 
-    <TextView
-        android:id="@+id/related_movies_header"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/padding_size_small"
-        android:text="@string/related_movies"
-        android:textSize="@dimen/default_text_size"
-        android:textStyle="bold"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/related_movies_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/related_items_container_height"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/related_movies_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/padding_size_small"
+            android:text="@string/related_movies"
+            android:textSize="@dimen/default_text_size"
+            android:textStyle="bold"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/related_movies_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/related_items_container_height"/>
+
+    </LinearLayout>
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/progress_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        app:cpv_indeterminate="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -1,6 +1,8 @@
 package com.android.msahakyan.nestedrecycler.adapter;
 
 import android.content.Context;
+import android.os.Handler;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.android.msahakyan.nestedrecycler.common.datasource.DataSource;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
 import com.android.msahakyan.nestedrecycler.model.RelatedMoviesItem;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.List;
 
@@ -68,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         if (holder instanceof MovieViewHolder) {
             bindMovieViewHolder((MovieViewHolder) holder, (Movie) mItemList.get(position));
         } else if (holder instanceof RelatedMoviesViewHolder) {
-            bindRelatedItemsViewHolder((RelatedMoviesViewHolder) holder, (RelatedMoviesItem) mItemList.get(position));
+            bindRelatedItemsViewHolder((RelatedMoviesViewHolder) holder);
         }
     }
 
@@ -80,9 +83,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                RelatedMoviesItem relatedMoviesItem = new RelatedMoviesItem();
+                final RelatedMoviesItem relatedMoviesItem = new RelatedMoviesItem();
                 lastRelatedMoviesType = movie.getType();
-                relatedMoviesItem.setRelatedMovieList(DataSource.getRelatedMoviesByType(mContext, lastRelatedMoviesType));
 
                 // If related item was added before, we have to remove it and add a new one
                 if (relatedItemsPosition != -1) {
@@ -104,20 +106,39 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
                 mItemList.add(relatedItemsPosition, relatedMoviesItem);
                 notifyItemInserted(relatedItemsPosition);
                 notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
-                if (mRecyclerView != null) {
-                    mRecyclerView.smoothScrollToPosition(relatedItemsPosition);
+                if (mRecyclerView != null && relatedItemsPosition > 1) {
+                    //mRecyclerView.smoothScrollToPosition(relatedItemsPosition);
+                    ((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(relatedItemsPosition - 1, 0);
                 }
             }
         });
     }
 
-    private void bindRelatedItemsViewHolder(RelatedMoviesViewHolder holder, final RelatedMoviesItem relatedMoviesItem) {
+    private void bindRelatedItemsViewHolder(final RelatedMoviesViewHolder holder) {
         LinearLayoutManager layoutManager
             = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        holder.relatedItemsRecyclerView.setAdapter(null); // clear old data
+        holder.relatedMoviesHeader.setText(mContext.getString(R.string.loading_data));
         holder.relatedItemsRecyclerView.setLayoutManager(layoutManager);
         holder.relatedItemsRecyclerView.setHasFixedSize(true);
-        holder.relatedItemsRecyclerView.setAdapter(new RelatedMoviesAdapter(mContext, relatedMoviesItem.getRelatedMovieList()));
-        holder.relatedMoviesHeader.setText(mContext.getString(R.string.related_movies) + " " + lastRelatedMoviesType);
+
+        holder.progressView.setVisibility(View.VISIBLE);
+        holder.progressView.startAnimation();
+
+        // Get a handler that can be used to post to the main thread
+        Handler mainHandler = new Handler(mContext.getMainLooper());
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                final List<Movie> movieList = DataSource.getRelatedMoviesByType(mContext, lastRelatedMoviesType);
+                holder.progressView.clearAnimation();
+                holder.progressView.setVisibility(View.GONE);
+                holder.relatedItemsRecyclerView.setAdapter(new RelatedMoviesAdapter(mContext, movieList));
+                holder.relatedMoviesHeader.setText(mContext.getString(R.string.related_movies) + " " + lastRelatedMoviesType);
+            }
+        };
+        mainHandler.postDelayed(myRunnable, 1000);
     }
 
     @Override
@@ -192,6 +213,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
 
         @Bind(R.id.related_movies_header)
         protected TextView relatedMoviesHeader;
+
+        @Bind(R.id.progress_view)
+        protected CircularProgressView progressView;
 
         public RelatedMoviesViewHolder(View view) {
             super(view);

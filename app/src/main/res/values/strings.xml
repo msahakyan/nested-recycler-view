@@ -5,6 +5,14 @@
     <string name="related_movies">Movies for type</string>
     <string name="movie_default_type">thriller</string>
     <string name="loading_data">Loading data...</string>
+    <string name="details_movie_title_label">Title</string>
+    <string name="detail_movie_date_label">Date</string>
+    <string name="detail_movie_genre_label">Genre</string>
+    <string name="detail_movie_description_label">Description</string>
+    <string name="confirm_title">Confirm</string>
+    <string name="confirm_message">Do you want to continue to show details page?</string>
+    <string name="positive_btn">Yes</string>
+    <string name="negative_btn">Cancel</string>
 
     <array name="movies">
         <item>comedy_absolutely_anything_2015</item>
