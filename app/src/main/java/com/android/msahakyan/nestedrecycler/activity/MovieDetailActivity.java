@@ -108,7 +108,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancel() {
-                            // ABTestConfirmation.generateCancelEvent();
+                            generateCancelEvent();
                             finish();
                         }
                     });
