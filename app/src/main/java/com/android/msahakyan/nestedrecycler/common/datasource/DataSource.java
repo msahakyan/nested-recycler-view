@@ -86,4 +86,19 @@ public class DataSource {
         return relatedMovies;
     }
 
+    public static List<RecyclerItem> searchMoviesByName(Context context, String name) {
+        List<RecyclerItem> foundMovies = new ArrayList<>();
+
+        for (RecyclerItem item : getMovieList(context)) {
+            if (item instanceof Movie) {
+                Movie movie = (Movie) item;
+                if (movie.getName().contains(name)) {
+                    foundMovies.add(movie);
+                }
+            }
+        }
+
+        return foundMovies;
+    }
+
 }
