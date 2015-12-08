@@ -1,18 +1,29 @@
 package com.android.msahakyan.nestedrecycler.activity;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.SearchView;
 
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.adapter.MovieAdapter;
 import com.android.msahakyan.nestedrecycler.common.datasource.DataSource;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
+import com.android.msahakyan.nestedrecycler.provider.SearchSuggestionsProvider;
 
 import java.util.List;
 
@@ -28,15 +39,20 @@ public class MainActivity extends AppCompatActivity {
     protected RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
 
+    private GridLayoutManager mLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        handleIntent(getIntent());
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+
+        mLayoutManager = new GridLayoutManager(this, 2);
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 return mItems.get(position) instanceof Movie ? 1 : 2;
@@ -44,10 +60,65 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Set layout manager to recyclerView
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Fake data loading
         new FakeAsyncTask().execute();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            //  Saving the query during of on handle intent
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
+
+            mItems = DataSource.searchMoviesByName(MainActivity.this, query);
+            mAdapter = new MovieAdapter(MainActivity.this, mItems);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the options menu from XML
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Show list of movies again
+                mItems = DataSource.getMovieList(MainActivity.this);
+                mAdapter = new MovieAdapter(MainActivity.this, mItems);
+                mRecyclerView.setAdapter(mAdapter);
+
+                return true;
+            }
+        });
+
+        return true;
     }
 
     public class FakeAsyncTask extends AsyncTask<Void, Void, Void> {

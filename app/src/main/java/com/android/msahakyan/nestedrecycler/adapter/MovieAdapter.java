@@ -36,7 +36,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
 
     private Context mContext;
     private List<RecyclerItem> mItemList;
-    private int relatedItemsPosition = -1;
+    private int relatedItemsPosition = RecyclerView.NO_POSITION;
     private String lastRelatedMoviesType;
     private RecyclerView mRecyclerView;
 

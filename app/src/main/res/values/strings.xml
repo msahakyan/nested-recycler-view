@@ -13,6 +13,8 @@
     <string name="confirm_message">Do you want to continue to show details page?</string>
     <string name="positive_btn">Yes</string>
     <string name="negative_btn">Cancel</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search movie</string>
 
     <array name="movies">
         <item>comedy_absolutely_anything_2015</item>
