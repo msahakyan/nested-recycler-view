@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
@@ -12,20 +11,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.adapter.MovieAdapter;
-import com.android.msahakyan.nestedrecycler.common.datasource.DataSource;
 import com.android.msahakyan.nestedrecycler.model.Movie;
+import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
+import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
+import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
 import com.android.msahakyan.nestedrecycler.provider.SearchSuggestionsProvider;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,12 +43,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
     private List<RecyclerItem> mItems;
+    private ProgressDialog mDialog;
+    private GridLayoutManager mLayoutManager;
+    private Map<String, String> mUrlParams;
+    private String mEndpoint;
+    private int mCurrentPage;
 
     @Bind(R.id.movie_recycler_view)
     protected RecyclerView mRecyclerView;
+
     private MovieAdapter mAdapter;
 
-    private GridLayoutManager mLayoutManager;
+    private boolean mLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         handleIntent(getIntent());
+
+        mCurrentPage = 1;
+        mDialog = new ProgressDialog(MainActivity.this);
+        mItems = new ArrayList<>();
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -61,9 +80,79 @@ public class MainActivity extends AppCompatActivity {
 
         // Set layout manager to recyclerView
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    //check for scroll down
+                    loadMoreItems();
+                }
+            }
+        });
 
-        // Fake data loading
-        new FakeAsyncTask().execute();
+        initEndpointAndUrlParams(mCurrentPage);
+        mDialog.setMessage(getString(R.string.loading_data));
+        mDialog.show();
+        mAdapter = new MovieAdapter(MainActivity.this, mItems);
+        mRecyclerView.setAdapter(mAdapter);
+        loadMovieList();
+    }
+
+    private void initEndpointAndUrlParams(int page) {
+        mEndpoint = "http://api.themoviedb.org/3/discover/movie";
+        mUrlParams = new HashMap<>();
+        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+        mUrlParams.put("sort_by", "vote_average.desc");
+        mUrlParams.put("page", String.valueOf(page));
+    }
+
+    private void loadMoreItems() {
+        int visibleItemCount = mLayoutManager.getChildCount();
+        int totalItemCount = mLayoutManager.getItemCount();
+        int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+
+        if (!mLoading) {
+            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                mLoading = true;
+                Log.v(TAG, "Reached last Item!");
+
+                // Fetching new data...
+                initEndpointAndUrlParams(++mCurrentPage);
+
+                mDialog.setMessage(getString(R.string.loading_more_data));
+                mDialog.show();
+
+                loadMovieList();
+            }
+        }
+    }
+
+    private void loadMovieList() {
+        new NetworkUtilsImpl().executeJsonRequest(Request.Method.GET, new StringBuilder(mEndpoint),
+            mUrlParams, new NetworkRequestListener() {
+                @Override
+                public void onSuccess(JSONObject jsonResponse) {
+                    if (mDialog.isShowing()) {
+                        mDialog.dismiss();
+                    }
+                    final int startPosition = mItems.size();
+                    List<Movie> movieList = new Gson().fromJson(jsonResponse.toString(), MovieListParser.class).getResults();
+                    for (Movie movie : movieList) {
+                        mItems.add(movie);
+                    }
+                    mAdapter.notifyItemRangeInserted(startPosition, movieList.size());
+//                    mAdapter.notifyDataSetChanged();
+                    mLoading = false;
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    if (mDialog.isShowing()) {
+                        mDialog.dismiss();
+                    }
+                    Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     @Override
@@ -81,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
                 SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
             suggestions.saveRecentQuery(query, null);
 
-            mItems = DataSource.searchMoviesByName(MainActivity.this, query);
-            mAdapter = new MovieAdapter(MainActivity.this, mItems);
-            mRecyclerView.setAdapter(mAdapter);
+//            mItems = DataSource.searchMoviesByName(MainActivity.this, query);
+//            mAdapter = new MovieAdapter(MainActivity.this, mItems);
+//            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
@@ -110,55 +199,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Show list of movies again
-                mItems = DataSource.getMovieList(MainActivity.this);
-                mAdapter = new MovieAdapter(MainActivity.this, mItems);
-                mRecyclerView.setAdapter(mAdapter);
+//                mItems = DataSource.getMovieList(MainActivity.this);
+//                mAdapter = new MovieAdapter(MainActivity.this, mItems);
+//                mRecyclerView.setAdapter(mAdapter);
 
                 return true;
             }
         });
 
         return true;
-    }
-
-    public class FakeAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            this.dialog.setMessage(getString(R.string.loading_data));
-            this.dialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 2 seconds.
-            long endTime = System.currentTimeMillis() + 2 * 1000;
-            while (System.currentTimeMillis() < endTime) {
-                synchronized (this) {
-                    try {
-                        wait(endTime - System.currentTimeMillis());
-                        mItems = DataSource.getMovieList(MainActivity.this);
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void param) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            mAdapter = new MovieAdapter(MainActivity.this, mItems);
-            mRecyclerView.setAdapter(mAdapter);
-        }
     }
 }

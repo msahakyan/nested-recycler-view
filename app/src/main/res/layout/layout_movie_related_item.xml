@@ -10,13 +10,12 @@
         android:layout_height="@dimen/related_item_height"
         android:layout_margin="@dimen/margin_size_default">
 
-        <ImageView
+        <com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView
             android:id="@+id/movie_related_thumbnail"
             android:layout_width="@dimen/related_thumbnail_width"
             android:layout_height="@dimen/related_thumbnail_height"
             android:layout_centerHorizontal="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/comedy_mistress_america"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/movie_related_name"

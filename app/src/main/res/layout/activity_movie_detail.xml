@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity">
 
-    <ImageView
+    <com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView
         android:id="@+id/movie_detail_thumbnail"
         android:layout_width="@dimen/movie_detail_thumbnail_width"
         android:layout_height="@dimen/movie_detail_thumbnail_height"

@@ -1,7 +1,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:layout_margin="@dimen/margin_size_default">
 
@@ -10,13 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_size_default">
 
-        <ImageView
+        <!-- Thumbnail Image -->
+        <com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView
             android:id="@+id/movie_thumbnail"
             android:layout_width="@dimen/thumbnail_width"
             android:layout_height="@dimen/thumbnail_height"
             android:layout_centerHorizontal="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/comedy_mistress_america"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/movie_name"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/movie_thumbnail"
             android:layout_centerHorizontal="true"
-            android:gravity="left|start"
+            android:gravity="start|left"
             android:maxLines="2"
             android:paddingTop="@dimen/padding_size_small"
             android:text="@string/movie_default_name"
@@ -35,16 +35,17 @@
         <LinearLayout
             android:layout_width="@dimen/thumbnail_width"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_below="@id/movie_name"
             android:layout_centerHorizontal="true"
-            android:weightSum="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <TextView
                 android:id="@+id/movie_type"
                 android:layout_width="0dp"
-                android:layout_weight="0.6"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.4"
                 android:gravity="left|start"
                 android:paddingTop="@dimen/padding_size_small"
                 android:text="@string/movie_default_type"
@@ -54,8 +55,8 @@
             <TextView
                 android:id="@+id/movie_production_date"
                 android:layout_width="0dp"
-                android:layout_weight="0.4"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.6"
                 android:gravity="right|end"
                 android:paddingTop="@dimen/padding_size_small"
                 android:text="@string/movie_default_date"

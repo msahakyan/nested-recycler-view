@@ -1,12 +1,12 @@
 package com.android.msahakyan.nestedrecycler.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * Created by msahakyan on 14/11/15.
- * <p/>
+ * @author msahakyan
  * Common interface for both type of items which are using in current project
  */
 public interface RecyclerItem extends Serializable {
-    String getType();
+    List<Integer> getGenreIds();
 }

@@ -1,44 +1,94 @@
 package com.android.msahakyan.nestedrecycler.model;
 
-import android.support.annotation.StringDef;
+import com.google.gson.annotations.SerializedName;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 /**
- * Created by msahakyan on 14/11/15.
- * <p/>
- * Movie class
+ * @author msahakyan
  */
 public class Movie implements RecyclerItem {
 
-    // [FilmType enum  -- start]
-    private static final String FILM_TYPE_COMEDY = "comedy";
-    private static final String FILM_TYPE_THRILLER = "thriller";
-    private static final String FILM_TYPE_DRAMA = "drama";
-    private static final String FILM_TYPE_HISTORICAL = "historic";
-    private static final String FILM_TYPE_FANTASY = "fantasy";
+    @SerializedName("poster_path")
+    private String posterPath;
 
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({FILM_TYPE_COMEDY, FILM_TYPE_DRAMA, FILM_TYPE_FANTASY, FILM_TYPE_HISTORICAL, FILM_TYPE_THRILLER})
-    public @interface MovieType {
-    }
-    // [FilmType enum  -- end]
+    @SerializedName("adult")
+    private boolean adult;
 
+    @SerializedName("overview")
+    private String overview;
+
+    @SerializedName("release_date")
+    private String releaseDate;
+
+    @SerializedName("genre_ids")
+    private List<Integer> genreIds;
+
+    @SerializedName("id")
     private long id;
-    private String name;
-    private String productionDate;
-    private int thumbnailResId;
-    private String description;
 
-    @Movie.MovieType
-    private String type;
+    @SerializedName("original_title")
+    private String originalTitle;
 
-    List<Movie> relatedMovies;
+    @SerializedName("original_language")
+    private String originalLanguage;
 
-    public Movie() {
-        this.description = getDescription();
+    @SerializedName("title")
+    private String title;
+
+    @SerializedName("backdrop_path")
+    private String backdropPath;
+
+    @SerializedName("popularity")
+    private double popularity;
+
+    @SerializedName("vote_count")
+    private int voteCount;
+
+    @SerializedName("video")
+    private boolean video;
+
+    @SerializedName("vote_average")
+    private double voteAverage;
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 
     public long getId() {
@@ -49,51 +99,68 @@ public class Movie implements RecyclerItem {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getOriginalTitle() {
+        return originalTitle;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
     }
 
-    public String getProductionDate() {
-        return productionDate;
+    public String getOriginalLanguage() {
+        return originalLanguage;
     }
 
-    public void setProductionDate(String productionDate) {
-        this.productionDate = productionDate;
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
     }
 
-    public int getThumbnailResId() {
-        return thumbnailResId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setThumbnailResId(int thumbnailResId) {
-        this.thumbnailResId = thumbnailResId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    @Movie.MovieType
-    public String getType() {
-        return type;
+    public String getBackdropPath() {
+        return backdropPath;
     }
 
-    public void setType(@Movie.MovieType String type) {
-        this.type = type;
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
-    public List<Movie> getRelatedMovies() {
-        return relatedMovies;
+    public double getPopularity() {
+        return popularity;
     }
 
-    public void setRelatedMovies(List<Movie> relatedMovies) {
-        this.relatedMovies = relatedMovies;
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
     }
 
-    public String getDescription() {
-        return "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem " +
-            "Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum " +
-            "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem " +
-            "Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum";
+    public int getVoteCount() {
+        return voteCount;
     }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public void setVoteAverage(int voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
 }

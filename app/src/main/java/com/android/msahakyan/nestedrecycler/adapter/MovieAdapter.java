@@ -1,33 +1,45 @@
 package com.android.msahakyan.nestedrecycler.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
+import com.android.msahakyan.nestedrecycler.application.AppController;
+import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
-import com.android.msahakyan.nestedrecycler.common.datasource.DataSource;
 import com.android.msahakyan.nestedrecycler.model.Movie;
+import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
 import com.android.msahakyan.nestedrecycler.model.RelatedMoviesItem;
+import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
+import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
+import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by msahakyan on 12/11/15.
- * <p/>
- * Movie adapter which actually is adapter of  parent recycler view's
+ * @author msahakyan
+ *         <p/>
+ *         Movie adapter which actually is adapter of parent recycler view's
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewHolder> {
 
@@ -37,8 +49,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
     private Context mContext;
     private List<RecyclerItem> mItemList;
     private int relatedItemsPosition = RecyclerView.NO_POSITION;
-    private String lastRelatedMoviesType;
+    private List<Integer> mLastItemGenreIds;
     private RecyclerView mRecyclerView;
+    private String mEndpoint;
+    private Map<String, String> mUrlParams;
+    private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
 
     public MovieAdapter(Context context, List<RecyclerItem> itemList) {
         mContext = context;
@@ -76,15 +91,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
     }
 
     private void bindMovieViewHolder(MovieViewHolder holder, final Movie movie) {
-        holder.name.setText(movie.getName());
-        holder.thumbnail.setImageResource(movie.getThumbnailResId());
-        holder.date.setText(movie.getProductionDate());
-        holder.type.setText(movie.getType());
+        holder.name.setText(movie.getTitle());
+        if (movie.getPosterPath() != null) {
+            String fullPosterPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+            holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
+        }
+        holder.date.setText(movie.getReleaseDate());
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
                 final RelatedMoviesItem relatedMoviesItem = new RelatedMoviesItem();
-                lastRelatedMoviesType = movie.getType();
+                mLastItemGenreIds = movie.getGenreIds();
 
                 // If related item was added before, we have to remove it and add a new one
                 if (relatedItemsPosition != -1) {
@@ -97,6 +114,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
                     notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
                 }
 
+                if (Helper.isEmpty(mLastItemGenreIds)) {
+                    Toast.makeText(mContext, R.string.no_related_movies_available, Toast.LENGTH_SHORT).show();
+                    relatedItemsPosition = RecyclerView.NO_POSITION;
+                    return;
+                }
+
                 if (position < mItemList.size() - 1) {
                     relatedItemsPosition = position % 2 == 0 ? position + 2 : position + 1;
                 } else {
@@ -107,7 +130,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
                 notifyItemInserted(relatedItemsPosition);
                 notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
                 if (mRecyclerView != null && relatedItemsPosition > 1) {
-                    //mRecyclerView.smoothScrollToPosition(relatedItemsPosition);
                     ((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(relatedItemsPosition - 1, 0);
                 }
             }
@@ -125,20 +147,39 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         holder.progressView.setVisibility(View.VISIBLE);
         holder.progressView.startAnimation();
 
-        // Get a handler that can be used to post to the main thread
-        Handler mainHandler = new Handler(mContext.getMainLooper());
+        // Loading similar products
+        initEndpointAndUrlParams(1);
+        loadRelatedMovies(holder);
+    }
 
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                final List<Movie> movieList = DataSource.getRelatedMoviesByType(mContext, lastRelatedMoviesType);
-                holder.progressView.clearAnimation();
-                holder.progressView.setVisibility(View.GONE);
-                holder.relatedItemsRecyclerView.setAdapter(new RelatedMoviesAdapter(mContext, movieList));
-                holder.relatedMoviesHeader.setText(mContext.getString(R.string.related_movies) + " " + lastRelatedMoviesType);
-            }
-        };
-        mainHandler.postDelayed(myRunnable, 1000);
+    private void loadRelatedMovies(final RelatedMoviesViewHolder holder) {
+        new NetworkUtilsImpl().executeJsonRequest(Request.Method.GET, new StringBuilder(mEndpoint),
+            mUrlParams, new NetworkRequestListener() {
+                @Override
+                public void onSuccess(JSONObject jsonResponse) {
+                    holder.progressView.clearAnimation();
+                    holder.progressView.setVisibility(View.GONE);
+                    List<Movie> movieList = new Gson().fromJson(jsonResponse.toString(), MovieListParser.class).getResults();
+                    holder.relatedItemsRecyclerView.setAdapter(new RelatedMoviesAdapter(mContext, movieList));
+                    holder.relatedMoviesHeader.setText(mContext.getString(R.string.related_movies));
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    holder.progressView.clearAnimation();
+                    holder.progressView.setVisibility(View.GONE);
+                    Toast.makeText(mContext, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    private void initEndpointAndUrlParams(int page) {
+        mEndpoint = "http://api.themoviedb.org/3/discover/movie";
+        mUrlParams = new HashMap<>();
+        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+        mUrlParams.put("sort_by", "vote_average.desc");
+        mUrlParams.put("with_genres", Helper.getCsvGenreIds(mLastItemGenreIds));
+        mUrlParams.put("page", String.valueOf(page));
     }
 
     @Override
@@ -188,7 +229,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         protected TextView name;
 
         @Bind(R.id.movie_thumbnail)
-        protected ImageView thumbnail;
+        protected FadeInNetworkImageView thumbnail;
 
         @Bind(R.id.movie_production_date)
         protected TextView date;

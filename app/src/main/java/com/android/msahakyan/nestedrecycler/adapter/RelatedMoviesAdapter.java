@@ -2,20 +2,20 @@ package com.android.msahakyan.nestedrecycler.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
+import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Movie;
+import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
+import com.android.volley.toolbox.ImageLoader;
 
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
 
     private List<Movie> mMovieItems;
     private Context mContext;
+    private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
 
     public RelatedMoviesAdapter(Context context, List<Movie> movieItems) {
         mMovieItems = movieItems;
@@ -40,20 +41,20 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
     @Override
     public RelatedMoviesViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_movie_related_item, null, false);
-        RelatedMoviesViewHolder viewHolder = new RelatedMoviesViewHolder(view);
-        return viewHolder;
+        return new RelatedMoviesViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RelatedMoviesViewHolder holder, int position) {
         final Movie movie = mMovieItems.get(position);
-        holder.name.setText(movie.getName());
-        holder.thumbnail.setImageResource(movie.getThumbnailResId());
+        holder.name.setText(movie.getTitle());
+        if (movie.getPosterPath() != null) {
+            String fullPosterPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+            holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
+        }
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-//                //TODO Implement your logic here
-//                Toast.makeText(mContext, mMovieItems.get(position).getName(), Toast.LENGTH_SHORT).show();
                 startDetailsActivity(movie);
             }
         });
@@ -78,7 +79,7 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
         protected TextView name;
 
         @Bind(R.id.movie_related_thumbnail)
-        protected ImageView thumbnail;
+        protected FadeInNetworkImageView thumbnail;
 
         public RelatedMoviesViewHolder(View view) {
             super(view);

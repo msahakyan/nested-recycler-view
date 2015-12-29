@@ -18,10 +18,13 @@ import com.amazon.insights.Variation;
 import com.amazon.insights.VariationSet;
 import com.amazon.insights.error.InsightsError;
 import com.android.msahakyan.nestedrecycler.R;
+import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.abtest.ABTestConfig;
 import com.android.msahakyan.nestedrecycler.model.Movie;
+import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
+import com.android.volley.toolbox.ImageLoader;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import butterknife.Bind;
@@ -35,7 +38,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private Handler mainHandler;
 
     @Bind(R.id.movie_detail_thumbnail)
-    protected ImageView imageThumbnail;
+    protected FadeInNetworkImageView imageThumbnail;
 
     @Bind(R.id.movie_detail_title_label)
     protected TextView movieTitleLabel;
@@ -141,10 +144,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (getIntent().getExtras().containsKey(BundleKey.EXTRA_MOVIE)) {
             Movie movie = (Movie) getIntent().getSerializableExtra(BundleKey.EXTRA_MOVIE);
             if (movie != null) {
-                imageThumbnail.setImageResource(movie.getThumbnailResId());
-                movieTitle.setText(movie.getName());
-                movieDate.setText(movie.getProductionDate());
-                movieGenre.setText(movie.getType());
+                ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+                String fullPosterPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+                imageThumbnail.setImageUrl(fullPosterPath, imageLoader);
+                movieTitle.setText(movie.getTitle());
+                movieDate.setText(movie.getReleaseDate());
                 onShowDescVariationLoading(movie);
             }
         }
@@ -169,7 +173,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 movieDescriptionLabel.setText(getString(R.string.detail_movie_description_label));
-                                movieDescription.setText(movie.getDescription());
+                                movieDescription.setText(movie.getOverview());
                             }
                         });
                     }

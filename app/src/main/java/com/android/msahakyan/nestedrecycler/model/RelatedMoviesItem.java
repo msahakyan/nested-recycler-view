@@ -3,7 +3,7 @@ package com.android.msahakyan.nestedrecycler.model;
 import java.util.List;
 
 /**
- * Created by msahakyan on 14/11/15.
+ * @author msahakyan
  */
 public class RelatedMoviesItem implements RecyclerItem {
 
@@ -17,9 +17,8 @@ public class RelatedMoviesItem implements RecyclerItem {
         this.relatedMovieList = relatedMovieList;
     }
 
-
     @Override
-    public String getType() {
+    public List<Integer> getGenreIds() {
         return null;
     }
 }
