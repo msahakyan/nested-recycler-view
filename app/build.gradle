@@ -28,15 +28,17 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     // Support recyclerView
-    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
     // Support cardView
-    compile 'com.android.support:cardview-v7:23.1.0'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    // Support android volley networking library
+    compile 'com.github.erd:android-volley:1.0.0'
+    // Support gson library
+    compile 'com.google.code.gson:gson:2.4'
     // Support view injections and bindings
     compile 'com.jakewharton:butterknife:7.0.1'
-    // Support nice item animations for recyclerView
-    // compile 'jp.wasabeef:recyclerview-animators:1.2.2'
     // Support material design circle progress bar
     compile 'com.github.rahatarmanahmed:circularprogressview:2.4.0'
     compile files('libs/AmazonInsights-android-sdk-2.1.26.jar')

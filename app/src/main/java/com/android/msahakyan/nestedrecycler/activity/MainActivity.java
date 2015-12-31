@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                         mItems.add(movie);
                     }
                     mAdapter.notifyItemRangeInserted(startPosition, movieList.size());
-//                    mAdapter.notifyDataSetChanged();
                     mLoading = false;
                 }
 
@@ -169,10 +168,6 @@ public class MainActivity extends AppCompatActivity {
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                 SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
             suggestions.saveRecentQuery(query, null);
-
-//            mItems = DataSource.searchMoviesByName(MainActivity.this, query);
-//            mAdapter = new MovieAdapter(MainActivity.this, mItems);
-//            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
@@ -198,11 +193,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Show list of movies again
-//                mItems = DataSource.getMovieList(MainActivity.this);
-//                mAdapter = new MovieAdapter(MainActivity.this, mItems);
-//                mRecyclerView.setAdapter(mAdapter);
-
                 return true;
             }
         });

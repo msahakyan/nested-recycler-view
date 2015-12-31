@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
 
     private static final int TYPE_MOVIE = 1001;
     private static final int TYPE_RELATED_ITEMS = 1002;
+    private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private Context mContext;
     private List<RecyclerItem> mItemList;
@@ -54,10 +57,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
     private String mEndpoint;
     private Map<String, String> mUrlParams;
     private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
+    private boolean mRelatedItemsLoading;
+    private int mRelatedItemsCurrentPage;
+    private List<Movie> mRelatedItemList;
 
     public MovieAdapter(Context context, List<RecyclerItem> itemList) {
         mContext = context;
         mItemList = itemList;
+        mRelatedItemList = new ArrayList<>();
     }
 
     @Override
@@ -102,7 +109,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
             public void onClick(View view, int position) {
                 final RelatedMoviesItem relatedMoviesItem = new RelatedMoviesItem();
                 mLastItemGenreIds = movie.getGenreIds();
-
+                mRelatedItemList.clear();
                 // If related item was added before, we have to remove it and add a new one
                 if (relatedItemsPosition != -1) {
                     if (position > relatedItemsPosition) {
@@ -137,18 +144,29 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
     }
 
     private void bindRelatedItemsViewHolder(final RelatedMoviesViewHolder holder) {
-        LinearLayoutManager layoutManager
+        final LinearLayoutManager layoutManager
             = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        holder.relatedItemsRecyclerView.setAdapter(null); // clear old data
+        RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(mContext, mRelatedItemList);
+        holder.relatedItemsRecyclerView.setAdapter(adapter);
         holder.relatedMoviesHeader.setText(mContext.getString(R.string.loading_data));
         holder.relatedItemsRecyclerView.setLayoutManager(layoutManager);
         holder.relatedItemsRecyclerView.setHasFixedSize(true);
+
+        holder.relatedItemsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dx > 0) {
+                    //check for scroll right
+                    loadMoreItems(holder);
+                }
+            }
+        });
 
         holder.progressView.setVisibility(View.VISIBLE);
         holder.progressView.startAnimation();
 
         // Loading similar products
-        initEndpointAndUrlParams(1);
+        initEndpointAndUrlParams(mRelatedItemsCurrentPage = 1);
         loadRelatedMovies(holder);
     }
 
@@ -159,9 +177,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
                 public void onSuccess(JSONObject jsonResponse) {
                     holder.progressView.clearAnimation();
                     holder.progressView.setVisibility(View.GONE);
-                    List<Movie> movieList = new Gson().fromJson(jsonResponse.toString(), MovieListParser.class).getResults();
-                    holder.relatedItemsRecyclerView.setAdapter(new RelatedMoviesAdapter(mContext, movieList));
+                    List<Movie> freshLoadedList = new Gson().fromJson(jsonResponse.toString(), MovieListParser.class).getResults();
+                    mRelatedItemList.addAll(freshLoadedList);
+                    holder.relatedItemsRecyclerView.getAdapter().notifyItemRangeInserted(mRelatedItemList.size(), freshLoadedList.size());
                     holder.relatedMoviesHeader.setText(mContext.getString(R.string.related_movies));
+                    mRelatedItemsLoading = false;
                 }
 
                 @Override
@@ -171,6 +191,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
                     Toast.makeText(mContext, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+    }
+
+    private void loadMoreItems(final RelatedMoviesViewHolder holder) {
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) holder.relatedItemsRecyclerView.getLayoutManager();
+        int visibleItemCount = layoutManager.getChildCount();
+        int totalItemCount = layoutManager.getItemCount();
+        int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+        if (!mRelatedItemsLoading) {
+            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                mRelatedItemsLoading = true;
+                Log.v(TAG, "Reached last Item!");
+
+                // Fetching new data...
+                initEndpointAndUrlParams(++mRelatedItemsCurrentPage);
+                holder.progressView.setVisibility(View.VISIBLE);
+                holder.progressView.startAnimation();
+                loadRelatedMovies(holder);
+            }
+        }
     }
 
     private void initEndpointAndUrlParams(int page) {
