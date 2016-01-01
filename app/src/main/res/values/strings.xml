@@ -17,6 +17,9 @@
     <string name="search_hint">Search movie</string>
     <string name="loading_more_data">Loading more data...</string>
     <string name="no_related_movies_available">There are no related items for this movie</string>
+    <string name="episodes">Episodes</string>
+    <string name="posters">Posters</string>
+    <string name="details_movie_vote_average_label">Vote average</string>
 
     <array name="movies">
         <item>comedy_absolutely_anything_2015</item>

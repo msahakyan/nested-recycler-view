@@ -38,27 +38,30 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@id/movie_name"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/movie_type"
-                android:layout_width="0dp"
+                android:id="@+id/movie_average_vote"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
                 android:gravity="left|start"
-                android:paddingTop="@dimen/padding_size_small"
-                android:text="@string/movie_default_type"
+                android:paddingTop="@dimen/padding_size_medium"
                 android:textColor="@color/grey"
-                android:textSize="@dimen/default_text_size"/>
+                android:textSize="@dimen/default_text_size"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/star_off"/>
 
             <TextView
                 android:id="@+id/movie_production_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="1"
                 android:gravity="right|end"
-                android:paddingTop="@dimen/padding_size_small"
+                android:paddingTop="@dimen/padding_size_medium"
                 android:text="@string/movie_default_date"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/default_text_size"/>

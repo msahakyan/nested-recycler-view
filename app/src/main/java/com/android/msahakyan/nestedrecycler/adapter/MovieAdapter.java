@@ -1,6 +1,7 @@
 package com.android.msahakyan.nestedrecycler.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
+import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
 import com.android.msahakyan.nestedrecycler.application.AppController;
+import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Movie;
@@ -99,48 +102,60 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
 
     private void bindMovieViewHolder(MovieViewHolder holder, final Movie movie) {
         holder.name.setText(movie.getTitle());
+        holder.voteAvrg.setText(String.valueOf(movie.getVoteAverage()));
         if (movie.getPosterPath() != null) {
-            String fullPosterPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+            String fullPosterPath = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
         }
         holder.date.setText(movie.getReleaseDate());
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                final RelatedMoviesItem relatedMoviesItem = new RelatedMoviesItem();
-                mLastItemGenreIds = movie.getGenreIds();
-                mRelatedItemList.clear();
-                // If related item was added before, we have to remove it and add a new one
-                if (relatedItemsPosition != -1) {
-                    if (position > relatedItemsPosition) {
-                        position--;
-                    }
-
-                    mItemList.remove(relatedItemsPosition);
-                    notifyItemRemoved(relatedItemsPosition);
-                    notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
-                }
-
-                if (Helper.isEmpty(mLastItemGenreIds)) {
-                    Toast.makeText(mContext, R.string.no_related_movies_available, Toast.LENGTH_SHORT).show();
-                    relatedItemsPosition = RecyclerView.NO_POSITION;
-                    return;
-                }
-
-                if (position < mItemList.size() - 1) {
-                    relatedItemsPosition = position % 2 == 0 ? position + 2 : position + 1;
-                } else {
-                    relatedItemsPosition = position + 1;
-                }
-
-                mItemList.add(relatedItemsPosition, relatedMoviesItem);
-                notifyItemInserted(relatedItemsPosition);
-                notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
-                if (mRecyclerView != null && relatedItemsPosition > 1) {
-                    ((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(relatedItemsPosition - 1, 0);
-                }
+                startDetailsActivity(movie);
+                insertRelatedMoviesItem(position, movie);
             }
         });
+    }
+
+    private void startDetailsActivity(Movie movie) {
+        Intent intent = new Intent(mContext, MovieDetailActivity.class);
+        intent.putExtra(BundleKey.EXTRA_MOVIE, movie);
+        mContext.startActivity(intent);
+    }
+
+    private void insertRelatedMoviesItem(int position, Movie movie) {
+        final RelatedMoviesItem relatedMoviesItem = new RelatedMoviesItem();
+        mLastItemGenreIds = movie.getGenreIds();
+        mRelatedItemList.clear();
+        // If related item was added before, we have to remove it and add a new one
+        if (relatedItemsPosition != -1) {
+            if (position > relatedItemsPosition) {
+                position--;
+            }
+
+            mItemList.remove(relatedItemsPosition);
+            notifyItemRemoved(relatedItemsPosition);
+            notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
+        }
+
+        if (Helper.isEmpty(mLastItemGenreIds)) {
+            Toast.makeText(mContext, R.string.no_related_movies_available, Toast.LENGTH_SHORT).show();
+            relatedItemsPosition = RecyclerView.NO_POSITION;
+            return;
+        }
+
+        if (position < mItemList.size() - 1) {
+            relatedItemsPosition = position % 2 == 0 ? position + 2 : position + 1;
+        } else {
+            relatedItemsPosition = position + 1;
+        }
+
+        mItemList.add(relatedItemsPosition, relatedMoviesItem);
+        notifyItemInserted(relatedItemsPosition);
+        notifyItemRangeChanged(relatedItemsPosition, mItemList.size());
+        if (mRecyclerView != null && relatedItemsPosition > 1) {
+            ((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(relatedItemsPosition - 1, 0);
+        }
     }
 
     private void bindRelatedItemsViewHolder(final RelatedMoviesViewHolder holder) {
@@ -275,8 +290,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         @Bind(R.id.movie_production_date)
         protected TextView date;
 
-        @Bind(R.id.movie_type)
-        protected TextView type;
+        @Bind(R.id.movie_average_vote)
+        protected TextView voteAvrg;
 
         public MovieViewHolder(View view) {
             super(view);

@@ -49,7 +49,7 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
         final Movie movie = mMovieItems.get(position);
         holder.name.setText(movie.getTitle());
         if (movie.getPosterPath() != null) {
-            String fullPosterPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+            String fullPosterPath = "http://image.tmdb.org/t/p/w92/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
         }
         holder.setClickListener(new ItemClickListener() {

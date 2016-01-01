@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         mEndpoint = "http://api.themoviedb.org/3/discover/movie";
         mUrlParams = new HashMap<>();
         mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
-        mUrlParams.put("sort_by", "vote_average.desc");
         mUrlParams.put("page", String.valueOf(page));
     }
 
