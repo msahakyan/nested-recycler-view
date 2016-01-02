@@ -325,6 +325,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         }
     }
 
+    public void setRelatedItemsPosition(int relatedItemsPosition) {
+        this.relatedItemsPosition = relatedItemsPosition;
+    }
+
     // Overriding this method to get access to recyclerView on which current MovieAdapter has been attached.
     // In the future we will use that reference for scrolling to newly added relatedMovies item
     @Override

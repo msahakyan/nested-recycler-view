@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private Map<String, String> mUrlParams;
     private String mEndpoint;
     private int mCurrentPage;
+    private int mTotalPageSize;
+    private SearchView mSearchView;
 
     @Bind(R.id.movie_recycler_view)
     protected RecyclerView mRecyclerView;
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         mDialog.show();
         mAdapter = new MovieAdapter(MainActivity.this, mItems);
         mRecyclerView.setAdapter(mAdapter);
-        loadMovieList();
+        loadMovieList(false);
     }
 
     private void initEndpointAndUrlParams(int page) {
@@ -105,28 +107,39 @@ public class MainActivity extends AppCompatActivity {
         mUrlParams.put("page", String.valueOf(page));
     }
 
+    private void initSearchEndpointAndUrlParams(String query) {
+        mEndpoint = "http://api.themoviedb.org/3/search/movie";
+        mUrlParams = new HashMap<>();
+        mUrlParams.put("query", query.trim());
+        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+    }
+
     private void loadMoreItems() {
-        int visibleItemCount = mLayoutManager.getChildCount();
-        int totalItemCount = mLayoutManager.getItemCount();
-        int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+        if (mTotalPageSize > mCurrentPage) {
+            int visibleItemCount = mLayoutManager.getChildCount();
+            int totalItemCount = mLayoutManager.getItemCount();
+            int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
 
-        if (!mLoading) {
-            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                mLoading = true;
-                Log.v(TAG, "Reached last Item!");
+            if (!mLoading) {
+                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    mLoading = true;
+                    Log.v(TAG, "Reached last Item!");
 
-                // Fetching new data...
-                initEndpointAndUrlParams(++mCurrentPage);
+                    // Fetching new data...
+                    initEndpointAndUrlParams(++mCurrentPage);
 
-                mDialog.setMessage(getString(R.string.loading_more_data));
-                mDialog.show();
+                    mDialog.setMessage(getString(R.string.loading_more_data));
+                    mDialog.show();
 
-                loadMovieList();
+                    loadMovieList(true);
+                }
             }
+        } else {
+            // There are no more items to load
         }
     }
 
-    private void loadMovieList() {
+    private void loadMovieList(final boolean shouldInsertResults) {
         new NetworkUtilsImpl().executeJsonRequest(Request.Method.GET, new StringBuilder(mEndpoint),
             mUrlParams, new NetworkRequestListener() {
                 @Override
@@ -135,11 +148,49 @@ public class MainActivity extends AppCompatActivity {
                         mDialog.dismiss();
                     }
                     final int startPosition = mItems.size();
+                    MovieListParser movieListParser = new Gson().fromJson(jsonResponse.toString(), MovieListParser.class);
+                    mTotalPageSize = movieListParser.getTotalPages();
+                    List<Movie> movieList = movieListParser.getResults();
+                    if (shouldInsertResults) {
+                        mItems.addAll(movieList);
+                        mAdapter.notifyItemRangeInserted(startPosition, movieList.size());
+                    } else {
+                        mItems.clear();
+                        mItems.addAll(movieList);
+                        mAdapter.setRelatedItemsPosition(RecyclerView.NO_POSITION);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    mLoading = false;
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    if (mDialog.isShowing()) {
+                        mDialog.dismiss();
+                    }
+                    Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    private void loadSearchResults() {
+        new NetworkUtilsImpl().executeJsonRequest(Request.Method.GET, new StringBuilder(mEndpoint),
+            mUrlParams, new NetworkRequestListener() {
+                @Override
+                public void onSuccess(JSONObject jsonResponse) {
+                    if (mDialog.isShowing()) {
+                        mDialog.dismiss();
+                    }
                     List<Movie> movieList = new Gson().fromJson(jsonResponse.toString(), MovieListParser.class).getResults();
+                    mItems.clear();
+                    mCurrentPage = 1;
+                    mTotalPageSize = 1;
                     for (Movie movie : movieList) {
                         mItems.add(movie);
                     }
-                    mAdapter.notifyItemRangeInserted(startPosition, movieList.size());
+                    mAdapter.notifyDataSetChanged();
+                    mAdapter.setRelatedItemsPosition(RecyclerView.NO_POSITION);
                     mLoading = false;
                 }
 
@@ -155,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        // Set layout manager to recyclerView
+        mRecyclerView.setLayoutManager(mLayoutManager);
         handleIntent(intent);
     }
 
@@ -167,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                 SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
             suggestions.saveRecentQuery(query, null);
+
+            initSearchEndpointAndUrlParams(query);
+            mDialog.setMessage(getString(R.string.loading_more_data));
+            mDialog.show();
+            loadSearchResults();
+            mSearchView.clearFocus();
         }
     }
 
@@ -179,10 +238,10 @@ public class MainActivity extends AppCompatActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem menuItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        mSearchView = (SearchView) menuItem.getActionView();
 
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -192,6 +251,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Show list of movies again
+                initEndpointAndUrlParams(mCurrentPage = 1);
+                loadMovieList(false);
+
                 return true;
             }
         });
