@@ -32,6 +32,8 @@
         </activity>
         <activity android:name=".activity.MovieDetailActivity">
         </activity>
+        <activity android:name=".activity.TrailerActivity">
+        </activity>
 
         <provider
             android:name=".provider.SearchSuggestionsProvider"

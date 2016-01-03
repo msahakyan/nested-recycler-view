@@ -18,7 +18,9 @@
     <dimen name="detail_view_title_text_size">16sp</dimen>
     <dimen name="movie_detail_thumbnail_width">170dp</dimen>
     <dimen name="movie_detail_thumbnail_height">250dp</dimen>
-    <dimen name="posters_view_height">400dp</dimen>
-    <dimen name="poster_item_height">200dp</dimen>
+    <dimen name="backdrops_view_height">400dp</dimen>
     <dimen name="padding_size_medium">6dp</dimen>
+    <dimen name="trailer_view_height">150dp</dimen>
+    <dimen name="drawable_padding_size">5dp</dimen>
+    <dimen name="backdrop_item_height">100dp</dimen>
 </resources>

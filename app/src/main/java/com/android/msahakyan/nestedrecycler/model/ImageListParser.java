@@ -12,11 +12,8 @@ public class ImageListParser {
     @SerializedName("id")
     private long id;
 
-    @SerializedName("posters")
-    private List<Poster> posters;
-
     @SerializedName("backdrops")
-    private List<Poster> backdrops;
+    private List<Backdrop> backdrops;
 
     public long getId() {
         return id;
@@ -26,19 +23,12 @@ public class ImageListParser {
         this.id = id;
     }
 
-    public List<Poster> getPosters() {
-        return posters;
+    public void setBackdrops(List<Backdrop> backdrops) {
+        this.backdrops = backdrops;
     }
 
-    public void setPosters(List<Poster> posters) {
-        this.posters = posters;
-    }
-
-    public List<Poster> getBackdrops() {
+    public List<Backdrop> getBackdrops() {
         return backdrops;
     }
 
-    public void setBackdrops(List<Poster> backdrops) {
-        this.backdrops = backdrops;
-    }
 }

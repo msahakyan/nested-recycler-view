@@ -6,4 +6,5 @@ package com.android.msahakyan.nestedrecycler.common;
 public interface BundleKey {
 
     String EXTRA_MOVIE = "extra_movie";
+    String EXTRA_TRAILER_ID = "extra_trailer_id";
 }

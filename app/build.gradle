@@ -42,4 +42,5 @@ dependencies {
     // Support material design circle progress bar
     compile 'com.github.rahatarmanahmed:circularprogressview:2.4.0'
     compile files('libs/AmazonInsights-android-sdk-2.1.26.jar')
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

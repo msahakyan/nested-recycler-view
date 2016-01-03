@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
-import com.android.msahakyan.nestedrecycler.model.Poster;
+import com.android.msahakyan.nestedrecycler.model.Backdrop;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
 import com.android.volley.toolbox.ImageLoader;
 
@@ -21,31 +21,31 @@ import butterknife.ButterKnife;
 /**
  * @author msahakyan
  *         <p/>
- *         Movie posters adapter
+ *         Movie backdropes adapter
  */
-public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.EpisodeViewHolder> {
+public class BackdropAdapter extends RecyclerView.Adapter<BackdropAdapter.BackdropViewHolder> {
 
-    private List<Poster> mMoviePosters;
+    private List<Backdrop> mMovieBackdrops;
     private Context mContext;
     private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
 
-    public PosterAdapter(Context context, List<Poster> moviePosters) {
-        mMoviePosters = moviePosters;
+    public BackdropAdapter(Context context, List<Backdrop> movieBackdrops) {
+        mMovieBackdrops = movieBackdrops;
         mContext = context;
     }
 
     @Override
-    public EpisodeViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_poster_item, null, false);
-        return new EpisodeViewHolder(view);
+    public BackdropViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_backdrop_item, null, false);
+        return new BackdropViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(EpisodeViewHolder holder, int position) {
-        final Poster poster = mMoviePosters.get(position);
-        if (poster != null) {
-            String fullPosterPath = "http://image.tmdb.org/t/p/w185/" + poster.getFilePath();
-            holder.poster.setImageUrl(fullPosterPath, mImageLoader);
+    public void onBindViewHolder(BackdropViewHolder holder, int position) {
+        final Backdrop backdrop = mMovieBackdrops.get(position);
+        if (backdrop != null) {
+            String fullBackdropPath = "http://image.tmdb.org/t/p/w185/" + backdrop.getFilePath();
+            holder.backdrop.setImageUrl(fullBackdropPath, mImageLoader);
         }
         holder.setClickListener(new ItemClickListener() {
             @Override
@@ -57,17 +57,17 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.EpisodeVie
 
     @Override
     public int getItemCount() {
-        return mMoviePosters.size();
+        return mMovieBackdrops.size();
     }
 
-    static class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class BackdropViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemClickListener clickListener;
 
-        @Bind(R.id.movie_poster_thumbnail)
-        protected FadeInNetworkImageView poster;
+        @Bind(R.id.movie_backdrop_thumbnail)
+        protected FadeInNetworkImageView backdrop;
 
-        public EpisodeViewHolder(View view) {
+        public BackdropViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);

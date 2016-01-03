@@ -10,12 +10,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
-import com.android.msahakyan.nestedrecycler.adapter.PosterAdapter;
+import com.android.msahakyan.nestedrecycler.adapter.BackdropAdapter;
+import com.android.msahakyan.nestedrecycler.adapter.TrailerAdapter;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
+import com.android.msahakyan.nestedrecycler.config.Config;
+import com.android.msahakyan.nestedrecycler.model.Backdrop;
 import com.android.msahakyan.nestedrecycler.model.ImageListParser;
 import com.android.msahakyan.nestedrecycler.model.Movie;
-import com.android.msahakyan.nestedrecycler.model.Poster;
+import com.android.msahakyan.nestedrecycler.model.Trailer;
+import com.android.msahakyan.nestedrecycler.model.TrailerListParser;
 import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
 import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
@@ -59,6 +63,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     @Bind(R.id.movie_detail_episode_list)
     RecyclerView mEpisodeRecycler;
 
+    @Bind(R.id.movie_detail_trailer_recycler)
+    RecyclerView mTrailerRecycler;
+
     private String mEndpoint;
     private Map<String, String> mUrlParams;
 
@@ -70,9 +77,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         // Initialization ButterKnife
         ButterKnife.bind(this);
         mEpisodeRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+        mTrailerRecycler.setLayoutManager(new GridLayoutManager(this, 2));
 
         Movie movie = getMovieFromIntent();
         if (movie != null) {
+            loadTrailers(movie.getId());
             loadEpisodes(movie.getId());
         } else {
             Log.w(TAG, "Can't load movies from intent");
@@ -89,8 +98,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 public void onSuccess(JSONObject jsonResponse) {
                     progressView.clearAnimation();
                     progressView.setVisibility(View.GONE);
-                    List<Poster> posterList = new Gson().fromJson(jsonResponse.toString(), ImageListParser.class).getPosters();
-                    PosterAdapter episodeAdapter = new PosterAdapter(MovieDetailActivity.this, posterList);
+                    List<Backdrop> backdropList = new Gson().fromJson(jsonResponse.toString(), ImageListParser.class).getBackdrops();
+                    BackdropAdapter episodeAdapter = new BackdropAdapter(MovieDetailActivity.this, backdropList);
                     mEpisodeRecycler.setAdapter(episodeAdapter);
                     episodeAdapter.notifyDataSetChanged();
                 }
@@ -104,10 +113,41 @@ public class MovieDetailActivity extends AppCompatActivity {
             });
     }
 
+    private void loadTrailers(long movieId) {
+
+        String endpoint = "https://api.themoviedb.org/3/movie/" + movieId;
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("api_key", Config.API_KEY);
+        urlParams.put("append_to_response", "trailers");
+
+        progressView.startAnimation();
+        progressView.setVisibility(View.VISIBLE);
+        new NetworkUtilsImpl().executeJsonRequest(Request.Method.GET, new StringBuilder(endpoint),
+            urlParams, new NetworkRequestListener() {
+                @Override
+                public void onSuccess(JSONObject jsonResponse) {
+                    progressView.clearAnimation();
+                    progressView.setVisibility(View.GONE);
+                    List<Trailer> trailerList = new Gson().fromJson(jsonResponse.toString(), TrailerListParser.class).getTrailerList();
+                    TrailerAdapter trailerAdapter = new TrailerAdapter(MovieDetailActivity.this, trailerList);
+                    mTrailerRecycler.setAdapter(trailerAdapter);
+                    trailerAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    progressView.clearAnimation();
+                    progressView.setVisibility(View.GONE);
+                    Toast.makeText(MovieDetailActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+
     private void initEndpointAndUrlParams(long movieId) {
         mEndpoint = "http://api.themoviedb.org/3/movie/" + movieId + "/images";
         mUrlParams = new HashMap<>();
-        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+        mUrlParams.put("api_key", Config.API_KEY);
     }
 
     private Movie getMovieFromIntent() {
@@ -116,8 +156,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = (Movie) getIntent().getSerializableExtra(BundleKey.EXTRA_MOVIE);
             if (movie != null) {
                 ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-                String fullPosterPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
-                imageThumbnail.setImageUrl(fullPosterPath, imageLoader);
+                String fullBackdropPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+                imageThumbnail.setImageUrl(fullBackdropPath, imageLoader);
                 movieTitle.setText(movie.getTitle());
                 movieDate.setText(movie.getReleaseDate());
                 movieVoteAverage.setText(String.valueOf(movie.getVoteAverage()));

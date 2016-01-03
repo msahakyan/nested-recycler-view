@@ -145,7 +145,24 @@
             android:layout_marginTop="@dimen/margin_size_default"
             android:background="@color/grey"
             android:padding="@dimen/padding_size_default"
-            android:text="@string/posters"
+            android:text="@string/trailers"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/default_text_size"
+            android:textStyle="bold"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_detail_trailer_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/trailer_view_height"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_default"
+            android:background="@color/grey"
+            android:padding="@dimen/padding_size_default"
+            android:text="@string/backdrops"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="@dimen/default_text_size"
@@ -154,7 +171,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/movie_detail_episode_list"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/posters_view_height"/>
+            android:layout_height="@dimen/backdrops_view_height"/>
 
         <com.github.rahatarmanahmed.cpv.CircularProgressView
             android:id="@+id/progress_view"

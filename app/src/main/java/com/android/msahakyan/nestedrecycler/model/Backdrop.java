@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author msahakyan
  */
-public class Poster implements Parcelable {
+public class Backdrop implements Parcelable {
 
     public String getFilePath() {
         return filePath;
@@ -43,21 +43,21 @@ public class Poster implements Parcelable {
     @SerializedName("vote_average")
     private double coteAverage;
 
-    protected Poster(Parcel in) {
+    protected Backdrop(Parcel in) {
         filePath = in.readString();
         voteCount = in.readInt();
         coteAverage = in.readDouble();
     }
 
-    public static final Creator<Poster> CREATOR = new Creator<Poster>() {
+    public static final Creator<Backdrop> CREATOR = new Creator<Backdrop>() {
         @Override
-        public Poster createFromParcel(Parcel in) {
-            return new Poster(in);
+        public Backdrop createFromParcel(Parcel in) {
+            return new Backdrop(in);
         }
 
         @Override
-        public Poster[] newArray(int size) {
-            return new Poster[size];
+        public Backdrop[] newArray(int size) {
+            return new Backdrop[size];
         }
     };
 

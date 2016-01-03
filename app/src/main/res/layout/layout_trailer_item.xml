@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/movie_trailer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_default"
+        android:background="@color/medium_grey"
+        android:drawableLeft="@android:drawable/presence_video_online"
+        android:drawablePadding="@dimen/drawable_padding_size"
+        android:drawableStart="@android:drawable/presence_video_online"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:lines="1"
+        android:padding="@dimen/padding_size_default"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

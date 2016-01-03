@@ -8,8 +8,8 @@
     tools:context="com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity">
 
     <com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView
-        android:id="@+id/movie_poster_thumbnail"
+        android:id="@+id/movie_backdrop_thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/poster_item_height"
+        android:layout_height="@dimen/backdrop_item_height"
         android:scaleType="fitXY"/>
 </FrameLayout>

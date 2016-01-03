@@ -48,9 +48,9 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
     public void onBindViewHolder(RelatedMoviesViewHolder holder, int position) {
         final Movie movie = mMovieItems.get(position);
         holder.name.setText(movie.getTitle());
-        if (movie.getPosterPath() != null) {
-            String fullPosterPath = "http://image.tmdb.org/t/p/w92/" + movie.getPosterPath();
-            holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
+        if (movie.getBackdropPath() != null) {
+            String fullBackdropPath = "http://image.tmdb.org/t/p/w92/" + movie.getBackdropPath();
+            holder.thumbnail.setImageUrl(fullBackdropPath, mImageLoader);
         }
         holder.setClickListener(new ItemClickListener() {
             @Override
