@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.adapter.MovieAdapter;
+import com.android.msahakyan.nestedrecycler.common.BundleKey;
+import com.android.msahakyan.nestedrecycler.config.Config;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         handleIntent(getIntent());
 
         mCurrentPage = 1;
+        mTotalPageSize = 1;
         mDialog = new ProgressDialog(MainActivity.this);
         mItems = new ArrayList<>();
 
@@ -92,7 +95,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        initEndpointAndUrlParams(mCurrentPage);
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(BundleKey.EXTRA_MOVIE_ID)) {
+            initSimilarMoviesEndpointAndUrlParams(intent.getLongExtra(BundleKey.EXTRA_MOVIE_ID, -1));
+        } else {
+            initEndpointAndUrlParams(mCurrentPage);
+        }
+
         mDialog.setMessage(getString(R.string.loading_data));
         mDialog.show();
         mAdapter = new MovieAdapter(MainActivity.this, mItems);
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     private void initEndpointAndUrlParams(int page) {
         mEndpoint = "http://api.themoviedb.org/3/discover/movie";
         mUrlParams = new HashMap<>();
-        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+        mUrlParams.put("api_key", Config.API_KEY);
         mUrlParams.put("page", String.valueOf(page));
     }
 
@@ -111,7 +120,13 @@ public class MainActivity extends AppCompatActivity {
         mEndpoint = "http://api.themoviedb.org/3/search/movie";
         mUrlParams = new HashMap<>();
         mUrlParams.put("query", query.trim());
-        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+        mUrlParams.put("api_key", Config.API_KEY);
+    }
+
+    private void initSimilarMoviesEndpointAndUrlParams(long movieId) {
+        mEndpoint = "https://api.themoviedb.org/3/movie/" + movieId + "/similar";
+        mUrlParams = new HashMap<>();
+        mUrlParams.put("api_key", Config.API_KEY);
     }
 
     private void loadMoreItems() {

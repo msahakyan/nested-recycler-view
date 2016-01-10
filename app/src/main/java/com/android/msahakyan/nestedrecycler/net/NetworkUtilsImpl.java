@@ -14,6 +14,10 @@ import java.util.Map;
  */
 public class NetworkUtilsImpl implements INetworkUtils {
 
+    private static final int REQUEST_TIMEOUT = 5 * 1000;
+    private static final int MAX_RETRIES = 3;
+    private static final int BACKOFF_MULTIPLIER = 1;
+
     @Override
     public void executeJsonRequest(int method, StringBuilder endpoint, Map<String, String> urlParams, final NetworkRequestListener requestListener) {
         if (urlParams != null) {
@@ -43,6 +47,8 @@ public class NetworkUtilsImpl implements INetworkUtils {
                 }
             }
         );
+
+        jsonRequest.setRetryPolicy(new CustomRetryPolicy(REQUEST_TIMEOUT, MAX_RETRIES, BACKOFF_MULTIPLIER));
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonRequest);

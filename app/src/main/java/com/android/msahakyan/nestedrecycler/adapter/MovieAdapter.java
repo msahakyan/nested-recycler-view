@@ -12,12 +12,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.msahakyan.nestedrecycler.PushService;
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
+import com.android.msahakyan.nestedrecycler.common.PushNotification;
+import com.android.msahakyan.nestedrecycler.config.Config;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
@@ -156,6 +159,26 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         if (mRecyclerView != null && relatedItemsPosition > 1) {
             ((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(relatedItemsPosition - 1, 0);
         }
+        createNotification(movie);
+    }
+
+    private void createNotification(Movie movie) {
+        Intent i = new Intent();
+        PushNotification notification = new PushNotification();
+        notification.setId(movie.getId());
+        notification.setMessage("Similar movies for the movie: " + movie.getTitle());
+        notification.setTitle("Nested Recycler");
+        notification.setBigTitle("Similar Movies");
+        notification.setIconUrl(movie.getPosterPath());
+        notification.setImageUrl(movie.getBackdropPath());
+        i.putExtra(BundleKey.EXTRA_NOTIFICATION, notification);
+
+        sendPushNotification(mContext, i);
+    }
+
+    private static void sendPushNotification(Context context, Intent i) {
+        i.setClass(context, PushService.class);
+        context.startService(i);
     }
 
     private void bindRelatedItemsViewHolder(final RelatedMoviesViewHolder holder) {
@@ -232,7 +255,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
     private void initEndpointAndUrlParams(int page) {
         mEndpoint = "http://api.themoviedb.org/3/discover/movie";
         mUrlParams = new HashMap<>();
-        mUrlParams.put("api_key", "746bcc0040f68b8af9d569f27443901f");
+        mUrlParams.put("api_key", Config.API_KEY);
         mUrlParams.put("sort_by", "vote_average.desc");
         mUrlParams.put("with_genres", Helper.getCsvGenreIds(mLastItemGenreIds));
         mUrlParams.put("page", String.valueOf(page));

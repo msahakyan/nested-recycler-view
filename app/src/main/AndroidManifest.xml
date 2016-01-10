@@ -35,6 +35,10 @@
         <activity android:name=".activity.TrailerActivity">
         </activity>
 
+        <service
+            android:name=".PushService"
+            android:exported="false"/>
+
         <provider
             android:name=".provider.SearchSuggestionsProvider"
             android:authorities="com.android.msahakyan.nestedrecycler.provider.SearchSuggestionsProvider"/>
