@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private int mCurrentPage;
     private int mTotalPageSize;
     private SearchView mSearchView;
+    private long mMovieId;
+    private boolean mShouldLoadSimilarItems;
 
     @Bind(R.id.movie_recycler_view)
     protected RecyclerView mRecyclerView;
@@ -97,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(BundleKey.EXTRA_MOVIE_ID)) {
-            initSimilarMoviesEndpointAndUrlParams(intent.getLongExtra(BundleKey.EXTRA_MOVIE_ID, -1));
+            mTotalPageSize = 1;
+            mShouldLoadSimilarItems = true;
+            initSimilarMoviesEndpointAndUrlParams(mMovieId = intent.getLongExtra(BundleKey.EXTRA_MOVIE_ID, -1), mCurrentPage = 1);
         } else {
             initEndpointAndUrlParams(mCurrentPage);
         }
@@ -123,9 +127,10 @@ public class MainActivity extends AppCompatActivity {
         mUrlParams.put("api_key", Config.API_KEY);
     }
 
-    private void initSimilarMoviesEndpointAndUrlParams(long movieId) {
+    private void initSimilarMoviesEndpointAndUrlParams(long movieId, int page) {
         mEndpoint = "https://api.themoviedb.org/3/movie/" + movieId + "/similar";
         mUrlParams = new HashMap<>();
+        mUrlParams.put("page", String.valueOf(page));
         mUrlParams.put("api_key", Config.API_KEY);
     }
 
@@ -141,7 +146,11 @@ public class MainActivity extends AppCompatActivity {
                     Log.v(TAG, "Reached last Item!");
 
                     // Fetching new data...
-                    initEndpointAndUrlParams(++mCurrentPage);
+                    if (mShouldLoadSimilarItems) {
+                        initSimilarMoviesEndpointAndUrlParams(mMovieId, ++mCurrentPage);
+                    } else {
+                        initEndpointAndUrlParams(++mCurrentPage);
+                    }
 
                     mDialog.setMessage(getString(R.string.loading_more_data));
                     mDialog.show();
