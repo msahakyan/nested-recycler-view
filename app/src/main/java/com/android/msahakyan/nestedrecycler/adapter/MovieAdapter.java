@@ -24,6 +24,7 @@ import com.android.msahakyan.nestedrecycler.config.Config;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
+import com.android.msahakyan.nestedrecycler.model.RecyclerListItem;
 import com.android.msahakyan.nestedrecycler.model.RelatedMoviesItem;
 import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
 import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
@@ -114,16 +115,32 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                startDetailsActivity(movie);
+                startDetailsActivity(position);
                 insertRelatedMoviesItem(position, movie);
             }
         });
     }
 
-    private void startDetailsActivity(Movie movie) {
+    private void startDetailsActivity(int position) {
+        List<RecyclerItem> movieList = new ArrayList<>(mItemList.subList(position, mItemList.size()));
+        List<RecyclerItem> filteredItems = filterRelatedItems(movieList);
         Intent intent = new Intent(mContext, MovieDetailActivity.class);
-        intent.putExtra(BundleKey.EXTRA_MOVIE, movie);
+        RecyclerListItem recyclerListItem = new RecyclerListItem();
+        recyclerListItem.setItems(filteredItems);
+        intent.putExtra(BundleKey.EXTRA_MOVIE_LIST, recyclerListItem);
         mContext.startActivity(intent);
+    }
+
+    private List<RecyclerItem> filterRelatedItems(List<RecyclerItem> movies) {
+        List<RecyclerItem> filteredItems = new ArrayList<>();
+        if (movies != null) {
+            for (RecyclerItem item : movies) {
+                if (item instanceof Movie) {
+                    filteredItems.add(item);
+                }
+            }
+        }
+        return filteredItems;
     }
 
     private void insertRelatedMoviesItem(int position, Movie movie) {
@@ -166,8 +183,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         Intent i = new Intent();
         PushNotification notification = new PushNotification();
         notification.setId(movie.getId());
-        notification.setMessage("Similar movies for the movie: " + movie.getTitle());
-        notification.setTitle("Nested Recycler");
+        notification.setMessage("Similar movies for \"" + movie.getTitle() + "\"");
+        notification.setTitle(mContext.getString(R.string.app_name));
         notification.setBigTitle("Similar Movies");
         notification.setIconUrl(movie.getPosterPath());
         notification.setImageUrl(movie.getBackdropPath());

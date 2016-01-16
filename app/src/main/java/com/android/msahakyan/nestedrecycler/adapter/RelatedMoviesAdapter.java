@@ -14,9 +14,11 @@ import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Movie;
+import com.android.msahakyan.nestedrecycler.model.RecyclerListItem;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
 import com.android.volley.toolbox.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -48,21 +50,24 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
     public void onBindViewHolder(RelatedMoviesViewHolder holder, int position) {
         final Movie movie = mMovieItems.get(position);
         holder.name.setText(movie.getTitle());
-        if (movie.getBackdropPath() != null) {
-            String fullBackdropPath = "http://image.tmdb.org/t/p/w92/" + movie.getBackdropPath();
-            holder.thumbnail.setImageUrl(fullBackdropPath, mImageLoader);
+        if (movie.getPosterPath() != null) {
+            String fullPosterPath = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
+            holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
         }
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                startDetailsActivity(movie);
+                startDetailsActivity(position);
             }
         });
     }
 
-    private void startDetailsActivity(Movie movie) {
+    private void startDetailsActivity(int position) {
+        List<Movie> movieList = new ArrayList<>(mMovieItems.subList(position, mMovieItems.size()));
         Intent intent = new Intent(mContext, MovieDetailActivity.class);
-        intent.putExtra(BundleKey.EXTRA_MOVIE, movie);
+        RecyclerListItem recyclerListItem = new RecyclerListItem();
+        recyclerListItem.setItems(movieList);
+        intent.putExtra(BundleKey.EXTRA_MOVIE_LIST, recyclerListItem);
         mContext.startActivity(intent);
     }
 

@@ -44,7 +44,7 @@ public class Helper {
         }
         StringBuilder output = new StringBuilder();
         for (Integer id : genreIds) {
-            output.append(id + ",");
+            output.append(id).append(",");
         }
         output.deleteCharAt(output.length() -1);
 
@@ -66,11 +66,8 @@ public class Helper {
         public void onCancel();
     }
 
-    public static <T> boolean isEmpty(Collection<T> collection) {
-        if (collection == null || collection.size() == 0) {
-            return true;
-        }
-        return false;
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.size() == 0;
     }
 
 }

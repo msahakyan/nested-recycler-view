@@ -23,4 +23,6 @@
     <dimen name="trailer_view_height">150dp</dimen>
     <dimen name="drawable_padding_size">5dp</dimen>
     <dimen name="backdrop_item_height">100dp</dimen>
+    <dimen name="arrow_size">40dp</dimen>
+    <dimen name="detail_view_poster_height">450dp</dimen>
 </resources>
