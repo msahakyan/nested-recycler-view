@@ -20,6 +20,7 @@ import com.android.msahakyan.nestedrecycler.adapter.TrailerAdapter;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.Helper;
+import com.android.msahakyan.nestedrecycler.common.ViewAnimator;
 import com.android.msahakyan.nestedrecycler.config.Config;
 import com.android.msahakyan.nestedrecycler.model.Backdrop;
 import com.android.msahakyan.nestedrecycler.model.ImageListParser;
@@ -44,6 +45,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -89,8 +91,12 @@ public class MovieDetailFragment extends Fragment {
     private String mEndpoint;
     private Map<String, String> mUrlParams;
 
+    private ViewAnimator mViewAnimator;
+    private boolean mIsBackdropListVisible;
+    private boolean mIsTrailerListVisible;
+
     public MovieDetailFragment() {
-        // Required empty public constructor
+        mViewAnimator = new ViewAnimator();
     }
 
     public static MovieDetailFragment newInstance() {
@@ -120,6 +126,8 @@ public class MovieDetailFragment extends Fragment {
             Log.w(TAG, "Can't load movies from intent");
         }
         setupAnimation();
+        mIsBackdropListVisible = true;
+        mIsTrailerListVisible = true;
 
         return view;
     }
@@ -237,6 +245,32 @@ public class MovieDetailFragment extends Fragment {
         }
         return movie;
     }
+
+    @OnClick(R.id.label_backdrops)
+    void onClickBackdropsLabel() {
+        if (mEpisodeRecycler != null) {
+            if (mIsBackdropListVisible) {
+                mViewAnimator.collapse(mEpisodeRecycler);
+            } else {
+                mViewAnimator.expand(mEpisodeRecycler);
+            }
+            mIsBackdropListVisible = !mIsBackdropListVisible;
+        }
+    }
+
+    @OnClick(R.id.label_trailers)
+    void onClickTrailersLabel() {
+        if (mTrailerRecycler != null) {
+            ViewAnimator viewAnimator = new ViewAnimator();
+            if (mIsTrailerListVisible) {
+                mViewAnimator.collapse(mTrailerRecycler);
+            } else {
+                mViewAnimator.expand(mTrailerRecycler);
+            }
+            mIsTrailerListVisible = !mIsTrailerListVisible;
+        }
+    }
+
 
     private boolean hasNextPage() {
         return getArguments().getBoolean(BundleKey.HAS_NEXT, false);
