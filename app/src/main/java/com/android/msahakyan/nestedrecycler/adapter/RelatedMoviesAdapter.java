@@ -15,6 +15,7 @@ import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.RecyclerListItem;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
 import com.android.volley.toolbox.ImageLoader;
 
@@ -25,7 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by msahakyan on 14/11/15.
+ * @author msahakyan
  * <p/>
  * Related movies adapter which is actually adapter of nested recycler view
  */
@@ -51,7 +52,7 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
         final Movie movie = mMovieItems.get(position);
         holder.name.setText(movie.getTitle());
         if (movie.getPosterPath() != null) {
-            String fullPosterPath = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
+            String fullPosterPath = Endpoint.IMAGE + "/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
         }
         holder.setClickListener(new ItemClickListener() {

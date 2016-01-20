@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import com.android.msahakyan.nestedrecycler.config.Config;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
 import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
 import com.android.msahakyan.nestedrecycler.provider.SearchSuggestionsProvider;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mDialog.setMessage(getString(R.string.loading_data));
+        mDialog.getWindow().setGravity(Gravity.CENTER);
         mDialog.show();
         mAdapter = new MovieAdapter(MainActivity.this, mItems);
         mRecyclerView.setAdapter(mAdapter);
@@ -114,14 +117,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initEndpointAndUrlParams(int page) {
-        mEndpoint = "http://api.themoviedb.org/3/discover/movie";
+        mEndpoint = Endpoint.DISCOVER;
         mUrlParams = new HashMap<>();
         mUrlParams.put("api_key", Config.API_KEY);
         mUrlParams.put("page", String.valueOf(page));
     }
 
     private void initSearchEndpointAndUrlParams(String query) {
-        mEndpoint = "http://api.themoviedb.org/3/search/movie";
+        mEndpoint = Endpoint.SEARCH;
         mUrlParams = new HashMap<>();
         mUrlParams.put("query", query.trim());
         mUrlParams.put("api_key", Config.API_KEY);
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     mDialog.setMessage(getString(R.string.loading_more_data));
+                    mDialog.getWindow().setGravity(Gravity.BOTTOM);
                     mDialog.show();
 
                     loadMovieList(true);
@@ -247,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
             initSearchEndpointAndUrlParams(query);
             mDialog.setMessage(getString(R.string.loading_more_data));
+            mDialog.getWindow().setGravity(Gravity.CENTER);
             mDialog.show();
             loadSearchResults();
             mSearchView.clearFocus();

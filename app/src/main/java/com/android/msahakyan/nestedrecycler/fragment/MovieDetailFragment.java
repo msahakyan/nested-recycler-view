@@ -26,6 +26,7 @@ import com.android.msahakyan.nestedrecycler.model.ImageListParser;
 import com.android.msahakyan.nestedrecycler.model.Movie;
 import com.android.msahakyan.nestedrecycler.model.Trailer;
 import com.android.msahakyan.nestedrecycler.model.TrailerListParser;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
 import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
@@ -175,7 +176,7 @@ public class MovieDetailFragment extends Fragment {
 
     private void loadTrailers(long movieId) {
 
-        String endpoint = "https://api.themoviedb.org/3/movie/" + movieId;
+        String endpoint = Endpoint.MOVIE + movieId;
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("api_key", Config.API_KEY);
         urlParams.put("append_to_response", "trailers");
@@ -214,7 +215,7 @@ public class MovieDetailFragment extends Fragment {
 
 
     private void initEndpointAndUrlParams(long movieId) {
-        mEndpoint = "http://api.themoviedb.org/3/movie/" + movieId + "/images";
+        mEndpoint = Endpoint.MOVIE + movieId + "/images";
         mUrlParams = new HashMap<>();
         mUrlParams.put("api_key", Config.API_KEY);
     }
@@ -225,7 +226,7 @@ public class MovieDetailFragment extends Fragment {
             movie = (Movie) getArguments().getSerializable(BundleKey.EXTRA_MOVIE);
             if (movie != null) {
                 ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-                String fullBackdropPath = "http://image.tmdb.org/t/p/w500/" + movie.getPosterPath();
+                String fullBackdropPath = Endpoint.IMAGE + "/w500/" + movie.getPosterPath();
                 imageThumbnail.setImageUrl(fullBackdropPath, imageLoader);
                 movieTitle.setText(movie.getTitle());
                 movieDate.setText(movie.getReleaseDate());
@@ -244,6 +245,4 @@ public class MovieDetailFragment extends Fragment {
     private boolean hasPreviousPage() {
         return getArguments().getBoolean(BundleKey.HAS_PREVIOUS, false);
     }
-
-    
 }

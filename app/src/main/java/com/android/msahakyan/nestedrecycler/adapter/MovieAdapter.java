@@ -26,6 +26,7 @@ import com.android.msahakyan.nestedrecycler.model.MovieListParser;
 import com.android.msahakyan.nestedrecycler.model.RecyclerItem;
 import com.android.msahakyan.nestedrecycler.model.RecyclerListItem;
 import com.android.msahakyan.nestedrecycler.model.RelatedMoviesItem;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
 import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
@@ -108,7 +109,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         holder.name.setText(movie.getTitle());
         holder.voteAvrg.setText(String.valueOf(movie.getVoteAverage()));
         if (movie.getPosterPath() != null) {
-            String fullPosterPath = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
+            String fullPosterPath = Endpoint.IMAGE + "/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
         }
         holder.date.setText(movie.getReleaseDate());

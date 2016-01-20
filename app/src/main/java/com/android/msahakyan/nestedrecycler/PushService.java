@@ -14,6 +14,7 @@ import com.android.msahakyan.nestedrecycler.activity.MainActivity;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.PushNotification;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
@@ -47,8 +48,8 @@ public class PushService extends IntentService {
 
     private PushNotification getNotificationFromIntent(Intent intent) {
         PushNotification pn = intent.getParcelableExtra(BundleKey.EXTRA_NOTIFICATION);
-        pn.setIconUrl("http://image.tmdb.org/t/p/w500/" + pn.getIconUrl());
-        pn.setImageUrl("http://image.tmdb.org/t/p/w500/" + pn.getImageUrl());
+        pn.setIconUrl(Endpoint.IMAGE + "/w185/" + pn.getIconUrl());
+        pn.setImageUrl(Endpoint.IMAGE + "/w500/" + pn.getImageUrl());
 
         return pn;
     }

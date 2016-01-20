@@ -10,6 +10,7 @@ import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Backdrop;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
 import com.android.volley.toolbox.ImageLoader;
 
@@ -44,7 +45,7 @@ public class BackdropAdapter extends RecyclerView.Adapter<BackdropAdapter.Backdr
     public void onBindViewHolder(BackdropViewHolder holder, int position) {
         final Backdrop backdrop = mMovieBackdrops.get(position);
         if (backdrop != null) {
-            String fullBackdropPath = "http://image.tmdb.org/t/p/w185/" + backdrop.getFilePath();
+            String fullBackdropPath = Endpoint.IMAGE + "/w185/" + backdrop.getFilePath();
             holder.backdrop.setImageUrl(fullBackdropPath, mImageLoader);
         }
         holder.setClickListener(new ItemClickListener() {
