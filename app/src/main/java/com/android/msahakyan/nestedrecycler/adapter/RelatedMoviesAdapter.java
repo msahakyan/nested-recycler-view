@@ -54,6 +54,7 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
         if (movie.getPosterPath() != null) {
             String fullPosterPath = Endpoint.IMAGE + "/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
+            holder.thumbnail.setErrorImageResId(R.drawable.error);
         }
         holder.setClickListener(new ItemClickListener() {
             @Override

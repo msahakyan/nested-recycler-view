@@ -111,6 +111,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
         if (movie.getPosterPath() != null) {
             String fullPosterPath = Endpoint.IMAGE + "/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
+            holder.thumbnail.setErrorImageResId(R.drawable.error);
         }
         holder.date.setText(movie.getReleaseDate());
         holder.setClickListener(new ItemClickListener() {

@@ -47,6 +47,7 @@ public class BackdropAdapter extends RecyclerView.Adapter<BackdropAdapter.Backdr
         if (backdrop != null) {
             String fullBackdropPath = Endpoint.IMAGE + "/w185/" + backdrop.getFilePath();
             holder.backdrop.setImageUrl(fullBackdropPath, mImageLoader);
+            holder.backdrop.setErrorImageResId(R.drawable.error);
         }
         holder.setClickListener(new ItemClickListener() {
             @Override

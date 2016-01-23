@@ -236,6 +236,7 @@ public class MovieDetailFragment extends Fragment {
                 ImageLoader imageLoader = AppController.getInstance().getImageLoader();
                 String fullBackdropPath = Endpoint.IMAGE + "/w500/" + movie.getPosterPath();
                 imageThumbnail.setImageUrl(fullBackdropPath, imageLoader);
+                imageThumbnail.setErrorImageResId(R.drawable.error);
                 movieTitle.setText(movie.getTitle());
                 movieDate.setText(movie.getReleaseDate());
                 movieVoteAverage.setText(String.valueOf(movie.getVoteAverage()));
