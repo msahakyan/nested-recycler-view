@@ -25,4 +25,5 @@
     <dimen name="backdrop_item_height">80dp</dimen>
     <dimen name="arrow_size">40dp</dimen>
     <dimen name="detail_view_poster_height">450dp</dimen>
+    <dimen name="label_height">30dp</dimen>
 </resources>

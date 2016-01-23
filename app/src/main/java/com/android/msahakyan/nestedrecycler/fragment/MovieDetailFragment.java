@@ -251,8 +251,10 @@ public class MovieDetailFragment extends Fragment {
         if (mEpisodeRecycler != null) {
             if (mIsBackdropListVisible) {
                 mViewAnimator.collapse(mEpisodeRecycler);
+                mBackdropsLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0);
             } else {
                 mViewAnimator.expand(mEpisodeRecycler);
+                mBackdropsLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0);
             }
             mIsBackdropListVisible = !mIsBackdropListVisible;
         }
@@ -261,11 +263,12 @@ public class MovieDetailFragment extends Fragment {
     @OnClick(R.id.label_trailers)
     void onClickTrailersLabel() {
         if (mTrailerRecycler != null) {
-            ViewAnimator viewAnimator = new ViewAnimator();
             if (mIsTrailerListVisible) {
                 mViewAnimator.collapse(mTrailerRecycler);
+                mTrailersLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0);
             } else {
                 mViewAnimator.expand(mTrailerRecycler);
+                mTrailersLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0);
             }
             mIsTrailerListVisible = !mIsTrailerListVisible;
         }
