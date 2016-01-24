@@ -17,6 +17,7 @@ import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
+import com.android.msahakyan.nestedrecycler.common.CustomItemDecorator;
 import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.common.PushNotification;
@@ -106,14 +107,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
     }
 
     private void bindMovieViewHolder(MovieViewHolder holder, final Movie movie) {
-        holder.name.setText(movie.getTitle());
-        holder.voteAvrg.setText(String.valueOf(movie.getVoteAverage()));
+//        holder.name.setText(movie.getTitle());
+//        holder.voteAvrg.setText(String.valueOf(movie.getVoteAverage()));
         if (movie.getPosterPath() != null) {
             String fullPosterPath = Endpoint.IMAGE + "/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
             holder.thumbnail.setErrorImageResId(R.drawable.error);
         }
-        holder.date.setText(movie.getReleaseDate());
+//        holder.date.setText(movie.getReleaseDate());
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -205,6 +206,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
             = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(mContext, mRelatedItemList);
         holder.relatedItemsRecyclerView.setAdapter(adapter);
+        holder.relatedItemsRecyclerView.addItemDecoration(new CustomItemDecorator((int) mContext.getResources().getDimension(R.dimen.padding_size_small)));
         holder.relatedMoviesHeader.setText(mContext.getString(R.string.loading_data));
         holder.relatedItemsRecyclerView.setLayoutManager(layoutManager);
         holder.relatedItemsRecyclerView.setHasFixedSize(true);
@@ -323,17 +325,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
      */
     class MovieViewHolder extends GenericViewHolder {
 
-        @Bind(R.id.movie_name)
-        protected TextView name;
+//        @Bind(R.id.movie_name)
+//        protected TextView name;
 
         @Bind(R.id.movie_thumbnail)
         protected FadeInNetworkImageView thumbnail;
 
-        @Bind(R.id.movie_production_date)
-        protected TextView date;
+//        @Bind(R.id.movie_production_date)
+//        protected TextView date;
 
-        @Bind(R.id.movie_average_vote)
-        protected TextView voteAvrg;
+//        @Bind(R.id.movie_average_vote)
+//        protected TextView voteAvrg;
 
         public MovieViewHolder(View view) {
             super(view);

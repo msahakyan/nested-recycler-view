@@ -8,6 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="none"
+    android:scrollbarStyle="insideOverlay"
     tools:context=".fragment.MovieDetailFragment">
 
     <LinearLayout
@@ -53,7 +55,7 @@
             android:paddingRight="@dimen/padding_size_default"
             android:text="@string/details_movie_title_label"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/default_text_size"
             android:textStyle="bold"/>
 
@@ -79,7 +81,7 @@
             android:paddingTop="@dimen/padding_size_default"
             android:text="@string/detail_movie_date_label"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/default_text_size"
             android:textStyle="bold"/>
 
@@ -106,7 +108,7 @@
             android:paddingTop="@dimen/padding_size_default"
             android:text="@string/details_movie_vote_average_label"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/default_text_size"
             android:textStyle="bold"/>
 
@@ -143,7 +145,7 @@
             android:paddingTop="@dimen/padding_size_default"
             android:text="@string/detail_movie_description_label"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/default_text_size"
             android:textStyle="bold"/>
 

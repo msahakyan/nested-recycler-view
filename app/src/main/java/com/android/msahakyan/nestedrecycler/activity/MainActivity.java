@@ -35,6 +35,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -249,6 +251,11 @@ public class MainActivity extends AppCompatActivity {
                 SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
             suggestions.saveRecentQuery(query, null);
 
+            try {
+                query = URLEncoder.encode(query, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                Log.w(TAG, "Can't encode search query", e);
+            }
             initSearchEndpointAndUrlParams(query);
             mDialog.setMessage(getString(R.string.loading_more_data));
             mDialog.getWindow().setGravity(Gravity.CENTER);

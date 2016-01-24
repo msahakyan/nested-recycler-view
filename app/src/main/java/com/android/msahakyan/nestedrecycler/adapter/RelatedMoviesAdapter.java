@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
@@ -27,8 +26,8 @@ import butterknife.ButterKnife;
 
 /**
  * @author msahakyan
- * <p/>
- * Related movies adapter which is actually adapter of nested recycler view
+ *         <p/>
+ *         Related movies adapter which is actually adapter of nested recycler view
  */
 public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdapter.RelatedMoviesViewHolder> {
 
@@ -50,7 +49,6 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
     @Override
     public void onBindViewHolder(RelatedMoviesViewHolder holder, int position) {
         final Movie movie = mMovieItems.get(position);
-        holder.name.setText(movie.getTitle());
         if (movie.getPosterPath() != null) {
             String fullPosterPath = Endpoint.IMAGE + "/w185/" + movie.getPosterPath();
             holder.thumbnail.setImageUrl(fullPosterPath, mImageLoader);
@@ -81,9 +79,6 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
     static class RelatedMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemClickListener clickListener;
-
-        @Bind(R.id.movie_related_name)
-        protected TextView name;
 
         @Bind(R.id.movie_related_thumbnail)
         protected FadeInNetworkImageView thumbnail;

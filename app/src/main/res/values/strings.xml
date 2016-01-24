@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NestedRecycler</string>
+    <string name="app_name">Movies</string>
     <string name="movie_default_name">Movie name</string>
     <string name="movie_default_date">1990</string>
     <string name="related_movies">Similar movies</string>

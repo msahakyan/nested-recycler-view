@@ -2,9 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:background="@color/light_grey"
-    android:padding="@dimen/padding_size_default">
+    android:layout_height="170dp"
+    android:background="@color/background_dark_medium"
+    android:paddingBottom="@dimen/padding_size_medium"
+    android:paddingLeft="@dimen/padding_size_default"
+    android:paddingRight="@dimen/padding_size_default"
+    android:paddingTop="@dimen/padding_size_default">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:paddingBottom="@dimen/padding_size_small"
+            android:paddingBottom="@dimen/padding_size_medium"
             android:text="@string/related_movies"
             android:textSize="@dimen/default_text_size"
             android:textStyle="bold"/>
@@ -29,12 +32,12 @@
     </LinearLayout>
 
     <com.github.rahatarmanahmed.cpv.CircularProgressView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/progress_view"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerInParent="true"
-        app:cpv_indeterminate="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:cpv_indeterminate="true"/>
 
 </RelativeLayout>
