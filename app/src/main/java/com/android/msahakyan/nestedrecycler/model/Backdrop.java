@@ -43,6 +43,9 @@ public class Backdrop implements Parcelable {
     @SerializedName("vote_average")
     private double coteAverage;
 
+    public Backdrop() {
+    }
+
     protected Backdrop(Parcel in) {
         filePath = in.readString();
         voteCount = in.readInt();

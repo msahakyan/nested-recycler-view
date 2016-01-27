@@ -8,8 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:scrollbars="none"
     android:scrollbarStyle="insideOverlay"
+    android:scrollbars="none"
     tools:context=".fragment.MovieDetailFragment">
 
     <LinearLayout
@@ -20,17 +20,22 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginBottom="@dimen/margin_size_default">
 
-            <com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView
-                android:id="@+id/movie_detail_thumbnail"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/backdrops_pager"
+                style="@style/BackdropPagerStyle"/>
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/pager_indicator"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/detail_view_poster_height"
-                android:layout_gravity="top|start"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:scaleType="centerCrop"/>
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/backdrops_pager"
+                android:background="@color/colorPrimaryDark"
+                android:padding="@dimen/padding_size_default"/>
 
             <ImageView
                 android:id="@+id/ic_arrow"
@@ -179,28 +184,6 @@
             android:id="@+id/movie_detail_trailer_recycler"
             android:layout_width="match_parent"
             android:layout_height="@dimen/trailer_view_height"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/label_backdrops"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/label_height"
-            android:layout_marginTop="@dimen/margin_size_default"
-            android:background="@color/grey"
-            android:drawableEnd="@drawable/ic_arrow_up"
-            android:drawableRight="@drawable/ic_arrow_up"
-            android:padding="@dimen/padding_size_default"
-            android:text="@string/backdrops"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/default_text_size"
-            android:textStyle="bold"
-            android:visibility="gone"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/movie_detail_episode_list"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/backdrops_view_height"
             android:visibility="gone"/>
 
         <com.github.rahatarmanahmed.cpv.CircularProgressView

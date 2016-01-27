@@ -2,6 +2,7 @@ package com.android.msahakyan.nestedrecycler.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,10 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.msahakyan.nestedrecycler.R;
-import com.android.msahakyan.nestedrecycler.adapter.BackdropAdapter;
+import com.android.msahakyan.nestedrecycler.adapter.BackdropPagerAdapter;
 import com.android.msahakyan.nestedrecycler.adapter.TrailerAdapter;
-import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
+import com.android.msahakyan.nestedrecycler.common.DepthPageTransformer;
 import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.ViewAnimator;
 import com.android.msahakyan.nestedrecycler.config.Config;
@@ -30,15 +31,15 @@ import com.android.msahakyan.nestedrecycler.model.TrailerListParser;
 import com.android.msahakyan.nestedrecycler.net.Endpoint;
 import com.android.msahakyan.nestedrecycler.net.NetworkRequestListener;
 import com.android.msahakyan.nestedrecycler.net.NetworkUtilsImpl;
-import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.gson.Gson;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +55,13 @@ import butterknife.OnClick;
 public class MovieDetailFragment extends Fragment {
 
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
+    private static final int PAGE_LIMIT = 25;
 
-    @Bind(R.id.movie_detail_thumbnail)
-    protected FadeInNetworkImageView imageThumbnail;
+    @Bind(R.id.backdrops_pager)
+    protected ViewPager mBackdropsPager;
+
+    @Bind(R.id.pager_indicator)
+    protected CirclePageIndicator mPagerIndicator;
 
     @Bind(R.id.movie_detail_title)
     protected TextView movieTitle;
@@ -73,27 +78,22 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.progress_view)
     protected CircularProgressView progressView;
 
-    @Bind(R.id.movie_detail_episode_list)
-    RecyclerView mEpisodeRecycler;
-
     @Bind(R.id.movie_detail_trailer_recycler)
-    RecyclerView mTrailerRecycler;
+    protected RecyclerView mTrailerRecycler;
 
     @Bind(R.id.label_trailers)
-    TextView mTrailersLabel;
-
-    @Bind(R.id.label_backdrops)
-    TextView mBackdropsLabel;
+    protected TextView mTrailersLabel;
 
     @Bind(R.id.ic_arrow)
-    ImageView mIconArrow;
+    protected ImageView mIconArrow;
 
     private String mEndpoint;
     private Map<String, String> mUrlParams;
 
     private ViewAnimator mViewAnimator;
-    private boolean mIsBackdropListVisible;
     private boolean mIsTrailerListVisible;
+
+    private Movie mCurrentMovie;
 
     public MovieDetailFragment() {
         mViewAnimator = new ViewAnimator();
@@ -115,25 +115,22 @@ public class MovieDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         ButterKnife.bind(this, view);
 
-        mEpisodeRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mTrailerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
-        Movie movie = getMovieFromArguments();
-        if (movie != null) {
-            loadTrailers(movie.getId());
-            loadEpisodes(movie.getId());
+        mCurrentMovie = getMovieFromArguments();
+        if (mCurrentMovie != null) {
+            loadBackdrops(mCurrentMovie.getId());
+            loadTrailers(mCurrentMovie.getId());
         } else {
             Log.w(TAG, "Can't load movies from intent");
         }
         setupAnimation();
-        mIsBackdropListVisible = true;
         mIsTrailerListVisible = true;
 
         return view;
     }
 
     private void setupAnimation() {
-
         TranslateAnimation animation = new TranslateAnimation(0.0f, 30.0f, 0.0f, 0.0f);
         animation.setDuration(500);
         animation.setRepeatCount(Integer.MAX_VALUE);
@@ -148,7 +145,7 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
-    private void loadEpisodes(long movieId) {
+    private void loadBackdrops(long movieId) {
         initEndpointAndUrlParams(movieId);
         progressView.startAnimation();
         progressView.setVisibility(View.VISIBLE);
@@ -159,24 +156,29 @@ public class MovieDetailFragment extends Fragment {
                     progressView.clearAnimation();
                     progressView.setVisibility(View.GONE);
                     List<Backdrop> backdropList = new Gson().fromJson(jsonResponse.toString(), ImageListParser.class).getBackdrops();
+
                     if (!Helper.isEmpty(backdropList)) {
-                        mBackdropsLabel.setVisibility(View.VISIBLE);
-                        mEpisodeRecycler.setVisibility(View.VISIBLE);
-                        BackdropAdapter episodeAdapter = new BackdropAdapter(getActivity(), backdropList);
-                        mEpisodeRecycler.setAdapter(episodeAdapter);
-                        episodeAdapter.notifyDataSetChanged();
+                        if (backdropList.size() > PAGE_LIMIT) {
+                            backdropList = backdropList.subList(0, PAGE_LIMIT);
+                        }
+                        mBackdropsPager.setPageTransformer(false, new DepthPageTransformer());
                     } else {
-                        mEpisodeRecycler.setVisibility(View.GONE);
-                        mBackdropsLabel.setVisibility(View.GONE);
+                        // Show poster if there are no any available backdrops
+                        backdropList = new ArrayList<>(1);
+                        Backdrop poster = new Backdrop();
+                        poster.setFilePath(mCurrentMovie.getPosterPath());
+                        backdropList.add(poster);
                     }
+                    BackdropPagerAdapter mPagerAdapter = new BackdropPagerAdapter(getActivity(), backdropList);
+                    mBackdropsPager.setAdapter(mPagerAdapter);
+                    mBackdropsPager.setPageTransformer(false, new DepthPageTransformer());
+                    mPagerIndicator.setViewPager(mBackdropsPager);
                 }
 
                 @Override
                 public void onError(VolleyError error) {
                     progressView.clearAnimation();
                     progressView.setVisibility(View.GONE);
-                    mEpisodeRecycler.setVisibility(View.GONE);
-                    mBackdropsLabel.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -233,10 +235,6 @@ public class MovieDetailFragment extends Fragment {
         if (getArguments().containsKey(BundleKey.EXTRA_MOVIE)) {
             movie = (Movie) getArguments().getSerializable(BundleKey.EXTRA_MOVIE);
             if (movie != null) {
-                ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-                String fullBackdropPath = Endpoint.IMAGE + "/w500/" + movie.getPosterPath();
-                imageThumbnail.setImageUrl(fullBackdropPath, imageLoader);
-                imageThumbnail.setErrorImageResId(R.drawable.error);
                 movieTitle.setText(movie.getTitle());
                 movieDate.setText(movie.getReleaseDate());
                 movieVoteAverage.setText(String.valueOf(movie.getVoteAverage()));
@@ -245,20 +243,6 @@ public class MovieDetailFragment extends Fragment {
             }
         }
         return movie;
-    }
-
-    @OnClick(R.id.label_backdrops)
-    void onClickBackdropsLabel() {
-        if (mEpisodeRecycler != null) {
-            if (mIsBackdropListVisible) {
-                mViewAnimator.collapse(mEpisodeRecycler);
-                mBackdropsLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0);
-            } else {
-                mViewAnimator.expand(mEpisodeRecycler);
-                mBackdropsLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0);
-            }
-            mIsBackdropListVisible = !mIsBackdropListVisible;
-        }
     }
 
     @OnClick(R.id.label_trailers)

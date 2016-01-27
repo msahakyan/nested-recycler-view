@@ -21,5 +21,10 @@
         <item name="android:textSize">@dimen/actionbar_text_size</item>
     </style>
 
+    <style name="BackdropPagerStyle">
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/backdrops_pager_height</item>
+    </style>
 
 </resources>

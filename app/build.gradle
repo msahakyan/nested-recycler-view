@@ -41,6 +41,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     // Support material design circle progress bar
     compile 'com.github.rahatarmanahmed:circularprogressview:2.4.0'
+    // Support viewpager indicator
+    compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1'
     compile files('libs/AmazonInsights-android-sdk-2.1.26.jar')
     compile files('libs/YouTubeAndroidPlayerApi.jar')
 }
