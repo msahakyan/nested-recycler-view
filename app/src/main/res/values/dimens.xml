@@ -27,5 +27,9 @@
     <dimen name="detail_view_poster_height">450dp</dimen>
     <dimen name="label_height">30dp</dimen>
     <dimen name="actionbar_text_size">15sp</dimen>
-    <dimen name="backdrops_pager_height">200dp</dimen>
+    <dimen name="backdrops_pager_height">180dp</dimen>
+    <dimen name="trailer_thumbnail_max_width">400dp</dimen>
+    <dimen name="trailer_thumbnail_height">200dp</dimen>
+    <dimen name="padding_size_large">12dp</dimen>
+    <dimen name="padding_size_larger">16dp</dimen>
 </resources>

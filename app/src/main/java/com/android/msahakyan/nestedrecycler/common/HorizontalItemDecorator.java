@@ -7,11 +7,11 @@ import android.view.View;
 /**
  * @author msahakyan
  */
-public class CustomItemDecorator extends RecyclerView.ItemDecoration {
+public class HorizontalItemDecorator extends RecyclerView.ItemDecoration {
 
     private final int mHorizontalSpaceWidth;
 
-    public CustomItemDecorator(int horizontalSpaceHeight) {
+    public HorizontalItemDecorator(int horizontalSpaceHeight) {
         this.mHorizontalSpaceWidth = horizontalSpaceHeight;
     }
 

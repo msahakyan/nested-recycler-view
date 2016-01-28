@@ -2,19 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal">
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
+
+    <com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView
+        android:id="@+id/movie_trailer_thumbnail"
+        android:layout_width="@dimen/trailer_thumbnail_max_width"
+        android:layout_height="@dimen/trailer_thumbnail_height"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorPrimaryDark"/>
 
     <TextView
         android:id="@+id/movie_trailer_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_size_default"
-        android:background="@color/medium_grey"
-        android:drawableLeft="@android:drawable/presence_video_online"
-        android:drawablePadding="@dimen/drawable_padding_size"
-        android:drawableStart="@android:drawable/presence_video_online"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorPrimaryDark"
         android:ellipsize="end"
-        android:gravity="start|center_vertical"
         android:lines="1"
         android:padding="@dimen/padding_size_default"
         android:textColor="@android:color/white"/>

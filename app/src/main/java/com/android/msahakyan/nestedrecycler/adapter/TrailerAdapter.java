@@ -10,9 +10,13 @@ import android.widget.TextView;
 
 import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.activity.TrailerActivity;
+import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.model.Trailer;
+import com.android.msahakyan.nestedrecycler.net.Endpoint;
+import com.android.msahakyan.nestedrecycler.view.FadeInNetworkImageView;
+import com.android.volley.toolbox.ImageLoader;
 
 import java.util.List;
 
@@ -44,6 +48,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
         final Trailer trailer = mTrailerList.get(position);
         if (trailer != null) {
+            ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+            holder.trailerThumbnail.setImageUrl(getYoutubeThmbUrl(trailer.getSource()), imageLoader);
             holder.trailerName.setText(trailer.getName());
         }
         holder.setClickListener(new ItemClickListener() {
@@ -52,6 +58,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
                 startTrailerActivity(trailer);
             }
         });
+    }
+
+    private String getYoutubeThmbUrl(String source) {
+        return Endpoint.YOUTUBE_THUMBNAIL + source + "/mqdefault.jpg";
     }
 
     private void startTrailerActivity(Trailer trailer) {
@@ -68,6 +78,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     static class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemClickListener clickListener;
+
+        @Bind(R.id.movie_trailer_thumbnail)
+        protected FadeInNetworkImageView trailerThumbnail;
 
         @Bind(R.id.movie_trailer_name)
         protected TextView trailerName;

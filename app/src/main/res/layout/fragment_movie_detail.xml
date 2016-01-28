@@ -35,7 +35,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/backdrops_pager"
                 android:background="@color/colorPrimaryDark"
-                android:padding="@dimen/padding_size_default"/>
+                android:padding="@dimen/padding_size_large"/>
 
             <ImageView
                 android:id="@+id/ic_arrow"
@@ -47,7 +47,6 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_arrow"
                 android:visibility="visible"/>
-
         </RelativeLayout>
 
         <TextView
@@ -167,15 +166,13 @@
         <TextView
             android:id="@+id/label_trailers"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/label_height"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_size_default"
-            android:background="@color/grey"
-            android:drawableEnd="@drawable/ic_arrow_up"
-            android:drawableRight="@drawable/ic_arrow_up"
-            android:padding="@dimen/padding_size_default"
+            android:background="@color/colorPrimaryDark"
+            android:padding="@dimen/padding_size_large"
             android:text="@string/trailers"
             android:textAllCaps="true"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white"
             android:textSize="@dimen/default_text_size"
             android:textStyle="bold"
             android:visibility="gone"/>
@@ -183,6 +180,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/movie_detail_trailer_recycler"
             android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
             android:layout_height="@dimen/trailer_view_height"
             android:visibility="gone"/>
 

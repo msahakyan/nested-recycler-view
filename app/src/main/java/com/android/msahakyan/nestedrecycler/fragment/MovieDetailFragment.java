@@ -3,7 +3,7 @@ package com.android.msahakyan.nestedrecycler.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,7 +21,7 @@ import com.android.msahakyan.nestedrecycler.adapter.TrailerAdapter;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
 import com.android.msahakyan.nestedrecycler.common.DepthPageTransformer;
 import com.android.msahakyan.nestedrecycler.common.Helper;
-import com.android.msahakyan.nestedrecycler.common.ViewAnimator;
+import com.android.msahakyan.nestedrecycler.common.VerticalItemDecorator;
 import com.android.msahakyan.nestedrecycler.config.Config;
 import com.android.msahakyan.nestedrecycler.model.Backdrop;
 import com.android.msahakyan.nestedrecycler.model.ImageListParser;
@@ -46,7 +46,6 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 /**
@@ -90,13 +89,9 @@ public class MovieDetailFragment extends Fragment {
     private String mEndpoint;
     private Map<String, String> mUrlParams;
 
-    private ViewAnimator mViewAnimator;
-    private boolean mIsTrailerListVisible;
-
     private Movie mCurrentMovie;
 
     public MovieDetailFragment() {
-        mViewAnimator = new ViewAnimator();
     }
 
     public static MovieDetailFragment newInstance() {
@@ -115,7 +110,8 @@ public class MovieDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         ButterKnife.bind(this, view);
 
-        mTrailerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mTrailerRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTrailerRecycler.addItemDecoration(new VerticalItemDecorator((int) getActivity().getResources().getDimension(R.dimen.padding_size_large)));
 
         mCurrentMovie = getMovieFromArguments();
         if (mCurrentMovie != null) {
@@ -125,7 +121,6 @@ public class MovieDetailFragment extends Fragment {
             Log.w(TAG, "Can't load movies from intent");
         }
         setupAnimation();
-        mIsTrailerListVisible = true;
 
         return view;
     }
@@ -149,6 +144,7 @@ public class MovieDetailFragment extends Fragment {
         initEndpointAndUrlParams(movieId);
         progressView.startAnimation();
         progressView.setVisibility(View.VISIBLE);
+
         new NetworkUtilsImpl().executeJsonRequest(Request.Method.GET, new StringBuilder(mEndpoint),
             mUrlParams, new NetworkRequestListener() {
                 @Override
@@ -185,7 +181,6 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void loadTrailers(long movieId) {
-
         String endpoint = Endpoint.MOVIE + movieId;
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("api_key", Config.API_KEY);
@@ -244,21 +239,6 @@ public class MovieDetailFragment extends Fragment {
         }
         return movie;
     }
-
-    @OnClick(R.id.label_trailers)
-    void onClickTrailersLabel() {
-        if (mTrailerRecycler != null) {
-            if (mIsTrailerListVisible) {
-                mViewAnimator.collapse(mTrailerRecycler);
-                mTrailersLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0);
-            } else {
-                mViewAnimator.expand(mTrailerRecycler);
-                mTrailersLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0);
-            }
-            mIsTrailerListVisible = !mIsTrailerListVisible;
-        }
-    }
-
 
     private boolean hasNextPage() {
         return getArguments().getBoolean(BundleKey.HAS_NEXT, false);

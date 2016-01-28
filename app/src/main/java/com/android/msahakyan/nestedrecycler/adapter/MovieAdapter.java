@@ -17,7 +17,7 @@ import com.android.msahakyan.nestedrecycler.R;
 import com.android.msahakyan.nestedrecycler.activity.MovieDetailActivity;
 import com.android.msahakyan.nestedrecycler.application.AppController;
 import com.android.msahakyan.nestedrecycler.common.BundleKey;
-import com.android.msahakyan.nestedrecycler.common.CustomItemDecorator;
+import com.android.msahakyan.nestedrecycler.common.HorizontalItemDecorator;
 import com.android.msahakyan.nestedrecycler.common.Helper;
 import com.android.msahakyan.nestedrecycler.common.ItemClickListener;
 import com.android.msahakyan.nestedrecycler.common.PushNotification;
@@ -206,7 +206,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
             = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(mContext, mRelatedItemList);
         holder.relatedItemsRecyclerView.setAdapter(adapter);
-        holder.relatedItemsRecyclerView.addItemDecoration(new CustomItemDecorator((int) mContext.getResources().getDimension(R.dimen.padding_size_small)));
+        holder.relatedItemsRecyclerView.addItemDecoration(new HorizontalItemDecorator((int) mContext.getResources().getDimension(R.dimen.padding_size_small)));
         holder.relatedMoviesHeader.setText(mContext.getString(R.string.loading_data));
         holder.relatedItemsRecyclerView.setLayoutManager(layoutManager);
         holder.relatedItemsRecyclerView.setHasFixedSize(true);
