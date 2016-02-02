@@ -9,4 +9,5 @@
     <color name="background_default_dark">#424242</color>
     <color name="background_dark_medium">#616161</color>
     <color name="white">#FFFFFF</color>
+    <color name="gold">#AF7817</color>
 </resources>
