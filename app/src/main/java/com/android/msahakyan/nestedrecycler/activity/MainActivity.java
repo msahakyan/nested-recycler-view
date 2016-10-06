@@ -164,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
                     loadMovieList(true);
                 }
             }
-        } else {
-            // There are no more items to load
         }
     }
 

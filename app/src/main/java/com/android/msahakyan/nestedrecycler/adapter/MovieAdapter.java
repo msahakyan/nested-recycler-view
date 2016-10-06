@@ -325,17 +325,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.GenericViewH
      */
     class MovieViewHolder extends GenericViewHolder {
 
-//        @Bind(R.id.movie_name)
-//        protected TextView name;
-
         @Bind(R.id.movie_thumbnail)
         protected FadeInNetworkImageView thumbnail;
-
-//        @Bind(R.id.movie_production_date)
-//        protected TextView date;
-
-//        @Bind(R.id.movie_average_vote)
-//        protected TextView voteAvrg;
 
         public MovieViewHolder(View view) {
             super(view);
