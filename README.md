@@ -19,17 +19,29 @@ If user clicks on some other movie item the detail view for that movie will be l
 
 # Screenshots from movies app
 
-`main page`<br/>
-<img src="https://cloud.githubusercontent.com/assets/11542701/12661695/6cfc4f38-c61b-11e5-955a-f4764fa1c486.png" width="240px" height="426px" style="float: left; display:inline; margin: 30px;" alt="main feed page"></img>
+`movie list page`<br/>
+<img src="https://github.com/msahakyan/nested-recycler-view/blob/master/app/src/main/res/raw/movie_list_framed.png" width="240px" height="426px" style="float: left; display:inline; margin: 30px;" alt="main feed page"></img>
 
-`similar movies`<br/>
-<img src="https://cloud.githubusercontent.com/assets/11542701/12661709/83e49a8e-c61b-11e5-8f73-06a659b3c086.png" width="240px" height="426px" style="margin: 30px;" alt="main feed page with loaded similar movies"></img>
+`similar movies page`<br/>
+<img src="https://github.com/msahakyan/nested-recycler-view/blob/master/app/src/main/res/raw/similar_movies_framed.png" width="240px" height="426px" style="margin: 30px;" alt="main feed page with loaded similar movies"></img>
 
-`detail page`<br/>
-<img src="https://cloud.githubusercontent.com/assets/11542701/12661723/a0a11ba2-c61b-11e5-8ce7-10662877f98c.png" width="240px" height="426px" style="float: left; display:inline; margin: 30px;"  alt="detail page view"></img>
+`movie detail page`<br/>
+<img src="https://github.com/msahakyan/nested-recycler-view/blob/master/app/src/main/res/raw/movie_detail_framed.png" width="240px" height="426px" style="float: left; display:inline; margin: 30px;"  alt="detail page view"></img>
 
-`search view`<br/>
-<img src="https://cloud.githubusercontent.com/assets/11542701/12661712/8c920ed2-c61b-11e5-8ca2-b1419f19712f.png" width="240px" height="426px" style="float: left; display:inline; margin: 30px;"  alt="main feed page with active search view"></img>
+`search results view`<br/>
+<img src="https://github.com/msahakyan/nested-recycler-view/blob/master/app/src/main/res/raw/search_results_framed.png" width="240px" height="426px" style="float: left; display:inline; margin: 30px;"  alt="main feed page with active search view"></img>
 
 `integrated youtube player`<br/>
-<img src="https://cloud.githubusercontent.com/assets/11542701/12661719/93ac554c-c61b-11e5-92f2-d95a7d34c860.png" width="240px" height="426px" style="margin: 30px;" alt="integrated youtube player"></img>
+<img src="https://github.com/msahakyan/nested-recycler-view/blob/master/app/src/main/res/raw/youtube_player_framed.png" width="240px" height="426px" style="margin: 30px;" alt="integrated youtube player"></img>
+
+
+# Used Libraries
+<ul>
+  <li><b>com.github.erd:android-volley:1.0.0</b> <i>Networking</i>
+  <li><b>com.google.code.gson:gson:2.4</b> <i>Serializing</i>
+  <li><b>com.jakewharton:butterknife:7.0.1</b> <i>View injection</i>
+  <li><b>com.github.rahatarmanahmed:circularprogressview:2.4.0</b> <i>Circular progress view</i>
+  <li> <b>com.mcxiaoke.viewpagerindicator:library:2.4.1</b> <i>View pager indicator</i>
+  <li> <b>AmazonInsights-android-sdk-2.1.26.jar</b> <i>A/B-Testing</i>
+  <li> <b>YouTubeAndroidPlayerApi.jar</b> <i>Youtube API support</i>  
+</ul>
